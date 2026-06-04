@@ -15,7 +15,7 @@ export const buttonVariants = cva(
         primary:
           'bg-primary text-primary-foreground shadow-sm hover:bg-primary-hover hover:-translate-y-0.5 active:bg-primary-active',
         gradient:
-          'bg-gradient-brand text-primary-foreground shadow-glow hover:-translate-y-0.5 hover:brightness-110',
+          'bg-gradient-brand text-primary-foreground shadow-glow hover:-translate-y-0.5 hover:brightness-110 active:brightness-95',
         secondary:
           'bg-surface text-foreground border border-border-strong hover:bg-surface-sunken hover:-translate-y-0.5',
         ghost: 'text-foreground hover:bg-surface-sunken',
