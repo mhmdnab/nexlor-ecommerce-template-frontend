@@ -1,8 +1,7 @@
 'use client';
 
-import { Select, buttonVariants, cn } from '@repo/ui';
+import { Eyebrow, GradientText, Reveal, Select, buttonVariants, cn } from '@repo/ui';
 import { SlidersHorizontal, X } from 'lucide-react';
-import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
 import { ProductGrid } from '@/components/ProductGrid';
@@ -43,77 +42,112 @@ function ProductsInner() {
   const activeCategory = categories?.find((c) => c.slug === category);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <header className="mb-8">
-        <h1 className="font-serif text-4xl font-semibold">{activeCategory?.name ?? 'All products'}</h1>
-        <p className="mt-1 text-muted-foreground">
-          {productsQuery.data ? `${productsQuery.data.meta.total} items` : 'Browse the collection'}
-        </p>
-      </header>
+    <div>
+      {/* ───────────────────────── Page header ───────────────────────── */}
+      <div className="mx-auto max-w-7xl px-4 pb-2 pt-10 sm:px-6 lg:px-8">
+        <Reveal>
+          <header>
+            <Eyebrow>Shop</Eyebrow>
+            <h1 className="mt-2 font-serif text-4xl font-semibold leading-tight sm:text-5xl">
+              {activeCategory ? (
+                activeCategory.name
+              ) : (
+                <>
+                  The full <GradientText>collection</GradientText>
+                </>
+              )}
+            </h1>
+            <p className="mt-3 max-w-md text-muted-foreground">
+              {productsQuery.data
+                ? `${productsQuery.data.meta.total} considered pieces, ready to ship.`
+                : 'Browse the collection.'}
+            </p>
+          </header>
+        </Reveal>
 
-      {/* Active filter chips */}
-      {(category || q) && (
-        <div className="mb-6 flex flex-wrap items-center gap-2">
-          {q && (
-            <Chip onRemove={() => setParam({ q: undefined })}>Search: “{q}”</Chip>
-          )}
-          {activeCategory && (
-            <Chip onRemove={() => setParam({ category: undefined })}>{activeCategory.name}</Chip>
-          )}
-        </div>
-      )}
-
-      <div className="grid gap-10 lg:grid-cols-[220px_1fr]">
-        {/* Filters rail (desktop) */}
-        <aside className="hidden lg:block">
-          <FilterPanel categories={categories} activeCategory={category} onCategory={(slug) => setParam({ category: slug })} />
-        </aside>
-
-        <div>
-          <div className="mb-6 flex items-center justify-between gap-4">
-            <button
-              type="button"
-              onClick={() => setMobileFilters(true)}
-              className={buttonVariants({ variant: 'secondary', size: 'sm', className: 'lg:hidden' })}
-            >
-              <SlidersHorizontal className="h-4 w-4" aria-hidden /> Filters
-            </button>
-            <label className="ml-auto flex items-center gap-2 text-sm text-muted-foreground">
-              Sort
-              <Select
-                value={`${sortParam}:${orderParam}`}
-                onChange={(e) => {
-                  const [sort, order] = e.target.value.split(':');
-                  setParam({ sort, order });
-                }}
-                className="h-9 w-48"
-              >
-                {SORTS.map((s) => (
-                  <option key={s.value} value={s.value}>
-                    {s.label}
-                  </option>
-                ))}
-              </Select>
-            </label>
+        {/* Active filter chips */}
+        {(category || q) && (
+          <div className="mt-6 flex flex-wrap items-center gap-2">
+            {q && <Chip onRemove={() => setParam({ q: undefined })}>Search: “{q}”</Chip>}
+            {activeCategory && (
+              <Chip onRemove={() => setParam({ category: undefined })}>{activeCategory.name}</Chip>
+            )}
           </div>
+        )}
+      </div>
 
-          <ProductGrid
-            products={productsQuery.data?.data}
-            isLoading={productsQuery.isLoading}
-            isError={productsQuery.isError}
-            onRetry={() => productsQuery.refetch()}
-          />
+      {/* ─────────────── Sticky glass filter / sort bar ─────────────── */}
+      <div
+        className={cn(
+          'sticky top-16 z-sticky mt-4 border-b border-glass-border',
+          'bg-glass-tint/80 supports-[backdrop-filter]:bg-glass-tint/65 supports-[backdrop-filter]:backdrop-blur-glass',
+        )}
+      >
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+          <button
+            type="button"
+            onClick={() => setMobileFilters(true)}
+            className={buttonVariants({ variant: 'secondary', size: 'sm', className: 'lg:hidden' })}
+          >
+            <SlidersHorizontal className="h-4 w-4" aria-hidden /> Filters
+          </button>
+          {/* Desktop category quick-links live in the rail; keep label here for context */}
+          <span className="hidden text-sm font-medium text-foreground lg:inline">
+            {activeCategory?.name ?? 'All products'}
+          </span>
+          <label className="ml-auto flex items-center gap-2 text-sm text-muted-foreground">
+            Sort
+            <Select
+              value={`${sortParam}:${orderParam}`}
+              onChange={(e) => {
+                const [sort, order] = e.target.value.split(':');
+                setParam({ sort, order });
+              }}
+              className="h-9 w-48"
+            >
+              {SORTS.map((s) => (
+                <option key={s.value} value={s.value}>
+                  {s.label}
+                </option>
+              ))}
+            </Select>
+          </label>
+        </div>
+      </div>
 
-          {productsQuery.data && (
-            <div className="mt-10">
-              <Pagination
-                page={productsQuery.data.meta.page}
-                totalPages={productsQuery.data.meta.totalPages}
-                total={productsQuery.data.meta.total}
-                onPageChange={(p) => setParam({ page: String(p) })}
+      {/* ───────────────────────── Results ───────────────────────── */}
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-[220px_1fr]">
+          {/* Filters rail (desktop) — sticks below the glass bar */}
+          <aside className="hidden lg:block">
+            <div className="sticky top-32">
+              <FilterPanel
+                categories={categories}
+                activeCategory={category}
+                onCategory={(slug) => setParam({ category: slug })}
               />
             </div>
-          )}
+          </aside>
+
+          <div>
+            <ProductGrid
+              products={productsQuery.data?.data}
+              isLoading={productsQuery.isLoading}
+              isError={productsQuery.isError}
+              onRetry={() => productsQuery.refetch()}
+            />
+
+            {productsQuery.data && (
+              <div className="mt-12 border-t border-border pt-6">
+                <Pagination
+                  page={productsQuery.data.meta.page}
+                  totalPages={productsQuery.data.meta.totalPages}
+                  total={productsQuery.data.meta.total}
+                  onPageChange={(p) => setParam({ page: String(p) })}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -124,7 +158,11 @@ function ProductsInner() {
           <div className="absolute inset-x-0 bottom-0 max-h-[80vh] overflow-y-auto rounded-t-xl bg-surface p-5">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-semibold">Filters</h2>
-              <button aria-label="Close" onClick={() => setMobileFilters(false)} className="grid h-9 w-9 place-items-center rounded-md hover:bg-surface-sunken">
+              <button
+                aria-label="Close"
+                onClick={() => setMobileFilters(false)}
+                className="grid h-9 w-9 place-items-center rounded-md hover:bg-surface-sunken"
+              >
                 <X className="h-5 w-5" aria-hidden />
               </button>
             </div>
