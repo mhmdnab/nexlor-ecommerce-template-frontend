@@ -1,0 +1,21 @@
+{
+  "name": "nexlor-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm-run-all --parallel dev:storefront dev:admin",
+    "dev:storefront": "npm run dev --workspace @nexlor/storefront",
+    "dev:admin": "npm run dev --workspace @nexlor/admin",
+    "build": "npm run build --workspace @nexlor/storefront && npm run build --workspace @nexlor/admin",
+    "lint": "npm run lint --workspace @nexlor/storefront && npm run lint --workspace @nexlor/admin",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.6.3"
+  }
+}

@@ -1,0 +1,10 @@
+@import '@repo/ui/tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Comfortable, readable measure for editorial body copy. */
+.prose-measure {
+  max-width: 68ch;
+}

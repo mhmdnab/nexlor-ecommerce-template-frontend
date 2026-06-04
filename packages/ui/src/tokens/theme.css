@@ -1,0 +1,165 @@
+/**
+ * Nexlor design tokens — the single source of visual truth.
+ * No raw hex / magic numbers in components: everything references these.
+ * Light + dark are designed together; dark is tonal, not naïvely inverted.
+ *
+ * Colors are stored as HSL channel triples so Tailwind can apply opacity via
+ * `hsl(var(--token) / <alpha-value>)`. To rebrand a client: change --primary
+ * (and optionally the neutral hue) here — nothing else.
+ */
+
+:root {
+  /* ---- surfaces ---- */
+  --background: 40 33% 98%;
+  --surface: 0 0% 100%;
+  --surface-raised: 40 25% 99%;
+  --surface-sunken: 40 20% 95%;
+
+  /* ---- lines ---- */
+  --border: 40 13% 87%;
+  --border-strong: 38 11% 74%;
+  --divider: 40 14% 91%;
+
+  /* ---- text ---- */
+  --foreground: 28 12% 13%;
+  --muted-foreground: 30 7% 36%;
+  --subtle-foreground: 30 6% 52%;
+
+  /* ---- brand ---- */
+  --primary: 243 75% 59%;
+  --primary-foreground: 0 0% 100%;
+  --primary-hover: 243 68% 53%;
+  --primary-active: 243 68% 46%;
+
+  --accent: 243 60% 96%;
+  --accent-foreground: 243 72% 45%;
+
+  /* ---- semantic (each: base / -foreground / -subtle) ---- */
+  --success: 152 56% 34%;
+  --success-foreground: 0 0% 100%;
+  --success-subtle: 150 50% 94%;
+
+  --warning: 33 92% 42%;
+  --warning-foreground: 0 0% 100%;
+  --warning-subtle: 40 92% 91%;
+
+  --danger: 0 72% 47%;
+  --danger-foreground: 0 0% 100%;
+  --danger-subtle: 0 80% 96%;
+
+  --info: 215 80% 46%;
+  --info-foreground: 0 0% 100%;
+  --info-subtle: 213 90% 95%;
+
+  /* ---- focus ---- */
+  --ring: 243 75% 59%;
+
+  /* ---- radius scale ---- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* ---- elevation (resting -> raised -> overlay -> modal) ---- */
+  --shadow-sm: 0 1px 2px 0 hsl(30 20% 10% / 0.05);
+  --shadow-md: 0 2px 8px -2px hsl(30 20% 10% / 0.08), 0 1px 2px hsl(30 20% 10% / 0.04);
+  --shadow-lg: 0 8px 24px -6px hsl(30 20% 10% / 0.12), 0 2px 6px hsl(30 20% 10% / 0.06);
+  --shadow-xl: 0 24px 48px -12px hsl(30 20% 10% / 0.20);
+
+  /* ---- motion ---- */
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 300ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+
+  /* ---- typography (apps inject --font-sans / --font-serif via next/font) ---- */
+  --font-sans-fallback: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-serif-fallback: ui-serif, Georgia, 'Times New Roman', serif;
+}
+
+.dark {
+  --background: 30 9% 8%;
+  --surface: 30 8% 11%;
+  --surface-raised: 30 8% 14%;
+  --surface-sunken: 30 10% 6%;
+
+  --border: 30 7% 22%;
+  --border-strong: 30 6% 34%;
+  --divider: 30 7% 18%;
+
+  --foreground: 40 22% 95%;
+  --muted-foreground: 38 9% 68%;
+  --subtle-foreground: 36 7% 50%;
+
+  --primary: 239 84% 70%;
+  --primary-foreground: 240 30% 10%;
+  --primary-hover: 239 84% 76%;
+  --primary-active: 239 84% 64%;
+
+  --accent: 243 40% 20%;
+  --accent-foreground: 243 80% 84%;
+
+  --success: 150 50% 50%;
+  --success-foreground: 150 60% 8%;
+  --success-subtle: 152 40% 16%;
+
+  --warning: 36 90% 56%;
+  --warning-foreground: 36 80% 10%;
+  --warning-subtle: 36 50% 16%;
+
+  --danger: 0 75% 62%;
+  --danger-foreground: 0 60% 10%;
+  --danger-subtle: 0 50% 18%;
+
+  --info: 213 88% 66%;
+  --info-foreground: 213 70% 10%;
+  --info-subtle: 213 50% 18%;
+
+  --ring: 239 84% 70%;
+
+  --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.30);
+  --shadow-md: 0 2px 8px -2px hsl(0 0% 0% / 0.40), 0 1px 2px hsl(0 0% 0% / 0.30);
+  --shadow-lg: 0 8px 24px -6px hsl(0 0% 0% / 0.50), 0 2px 6px hsl(0 0% 0% / 0.40);
+  --shadow-xl: 0 24px 48px -12px hsl(0 0% 0% / 0.60);
+}
+
+/* ---- base ---- */
+* {
+  border-color: hsl(var(--border));
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-sans, var(--font-sans-fallback));
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+/* Tabular figures for prices, quantities, order numbers, data cells. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+
+/* Honor reduced-motion: keep content instant, drop non-essential animation. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Visible focus on everything keyboard-reachable. Never remove outlines. */
+:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+  border-radius: 2px;
+}

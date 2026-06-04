@@ -1,0 +1,13 @@
+import type { Config } from 'tailwindcss';
+import preset from '@repo/ui/tailwind-preset';
+
+const config: Config = {
+  presets: [preset],
+  content: [
+    './src/**/*.{ts,tsx}',
+    // Scan the shared UI package so its classes are generated.
+    '../../packages/ui/src/**/*.{ts,tsx}',
+  ],
+};
+
+export default config;
