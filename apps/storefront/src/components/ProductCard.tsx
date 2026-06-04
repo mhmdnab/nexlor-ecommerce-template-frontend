@@ -30,8 +30,11 @@ export function ProductCard({ product, priority }: { product: ProductCardType; p
   }
 
   return (
-    <Link href={`/products/${product.slug}`} className="group block">
-      <div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-surface-sunken">
+    <Link
+      href={`/products/${product.slug}`}
+      className="group block transition-transform duration-base ease-standard hover:-translate-y-1"
+    >
+      <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-surface-sunken">
         {product.image ? (
           <Image
             src={product.image}
@@ -59,7 +62,7 @@ export function ProductCard({ product, priority }: { product: ProductCardType; p
             aria-label={`Add ${product.name} to cart`}
             className={cn(
               'absolute bottom-3 right-3 grid h-11 w-11 place-items-center rounded-full bg-surface text-foreground shadow-md',
-              'transition-all duration-base hover:bg-primary hover:text-primary-foreground',
+              'transition-all duration-base hover:bg-gradient-brand hover:text-primary-foreground',
               'md:opacity-0 md:translate-y-1 md:group-hover:opacity-100 md:group-hover:translate-y-0',
               'focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring',
             )}
