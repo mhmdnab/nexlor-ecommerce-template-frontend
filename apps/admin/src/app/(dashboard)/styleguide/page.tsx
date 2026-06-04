@@ -197,7 +197,7 @@ export default function StyleguidePage() {
 
           {/* Glass panel over a gradient backdrop */}
           <div className="relative h-28 overflow-hidden rounded-2xl bg-gradient-brand">
-            <GlassPanel className="absolute inset-x-4 bottom-4 rounded-xl p-3 text-sm">
+            <GlassPanel className="absolute inset-x-4 bottom-4 rounded-xl border p-3 text-sm">
               GlassPanel overlay (blurs what is behind)
             </GlassPanel>
           </div>
