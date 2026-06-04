@@ -3,16 +3,25 @@
 import { OrderStatus } from '@repo/types';
 import {
   Badge,
+  BentoGrid,
+  BentoTile,
   Button,
   Card,
   Checkbox,
   Dialog,
   EmptyState,
   ErrorState,
+  Eyebrow,
   Field,
+  GlassPanel,
+  GradientText,
   Input,
+  MagneticButton,
+  Marquee,
   Price,
   QuantityStepper,
+  Reveal,
+  Section as UiSection,
   Select,
   Sheet,
   Skeleton,
@@ -162,6 +171,67 @@ export default function StyleguidePage() {
           </Card>
           <EmptyState icon={<Inbox className="h-6 w-6" />} title="Nothing here" description="When items exist they’ll appear here." />
           <ErrorState onRetry={() => toast({ title: 'Retried', tone: 'info' })} />
+        </div>
+      </Section>
+
+      <Section title="Immersive foundation">
+        <div className="space-y-6">
+          {/* Gradient + glow + gradient button + magnetic */}
+          <div className="flex flex-wrap items-center gap-3">
+            <Button variant="gradient">Gradient CTA</Button>
+            <MagneticButton>
+              <Button variant="gradient">Magnetic CTA</Button>
+            </MagneticButton>
+            <span className="rounded-2xl bg-gradient-brand px-4 py-2 text-sm text-primary-foreground shadow-glow">
+              bg-gradient-brand + shadow-glow
+            </span>
+            <GradientText className="font-serif text-3xl font-semibold">Astonishing</GradientText>
+          </div>
+
+          {/* Eyebrow + inverse surface band */}
+          <div className="overflow-hidden rounded-2xl bg-surface-inverse p-6 text-surface-inverse-foreground">
+            <Eyebrow>New season</Eyebrow>
+            <p className="mt-2 font-serif text-2xl">Inverse drama surface</p>
+            <p className="mt-1 text-sm text-surface-inverse-muted">muted text on inverse</p>
+          </div>
+
+          {/* Glass panel over a gradient backdrop */}
+          <div className="relative h-28 overflow-hidden rounded-2xl bg-gradient-brand">
+            <GlassPanel className="absolute inset-x-4 bottom-4 rounded-xl p-3 text-sm">
+              GlassPanel overlay (blurs what is behind)
+            </GlassPanel>
+          </div>
+
+          {/* Bento + hover lift */}
+          <BentoGrid>
+            <BentoTile colSpan={2} rowSpan={1} className="p-5">
+              <p className="font-serif text-xl">Bento tile · span 2</p>
+              <p className="text-sm text-muted-foreground">hover to see lift + shadow</p>
+            </BentoTile>
+            <BentoTile className="p-5"><p className="text-sm">Tile</p></BentoTile>
+            <BentoTile className="p-5"><p className="text-sm">Tile</p></BentoTile>
+          </BentoGrid>
+
+          {/* Reveal stagger */}
+          <div className="grid grid-cols-3 gap-3">
+            {[0, 1, 2].map((i) => (
+              <Reveal key={i} delayIndex={i}>
+                <Card interactive className="p-4 text-sm">Reveal #{i + 1}</Card>
+              </Reveal>
+            ))}
+          </div>
+
+          {/* Marquee */}
+          <Marquee className="rounded-2xl border border-border py-3">
+            {['Free shipping over $75', '30-day returns', 'Carbon-neutral delivery'].map((t) => (
+              <span key={t} className="mx-6 text-xs uppercase tracking-wider text-muted-foreground">{t}</span>
+            ))}
+          </Marquee>
+
+          {/* Full-bleed Section tones */}
+          <UiSection tone="gradient" rounded className="!py-8">
+            <p className="font-serif text-xl">Section tone=gradient</p>
+          </UiSection>
         </div>
       </Section>
 
