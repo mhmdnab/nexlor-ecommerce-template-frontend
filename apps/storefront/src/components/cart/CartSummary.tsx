@@ -1,7 +1,7 @@
 'use client';
 
 import type { CartView } from '@repo/types';
-import { Button, Input, Price, useToast } from '@repo/ui';
+import { Button, Card, Input, Price, useToast } from '@repo/ui';
 import { Tag, X } from 'lucide-react';
 import { useState } from 'react';
 import { useApplyCoupon, useRemoveCoupon } from '@/lib/queries';
@@ -26,11 +26,11 @@ export function CartSummary({ cart, children }: { cart: CartView; children?: Rea
   }
 
   return (
-    <div className="rounded-lg border border-border bg-surface p-6">
-      <h2 className="text-lg font-semibold">Order summary</h2>
+    <Card className="p-6">
+      <h2 className="font-serif text-xl font-semibold">Order summary</h2>
 
       {/* Coupon */}
-      <div className="mt-4">
+      <div className="mt-5">
         {cart.coupon?.valid ? (
           <div className="flex items-center justify-between rounded-md bg-success-subtle px-3 py-2 text-sm">
             <span className="inline-flex items-center gap-2 font-medium text-success">
@@ -39,7 +39,7 @@ export function CartSummary({ cart, children }: { cart: CartView; children?: Rea
             <button
               aria-label="Remove coupon"
               onClick={() => removeCoupon.mutate()}
-              className="text-muted-foreground hover:text-foreground"
+              className="grid h-9 w-9 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-surface-sunken hover:text-foreground"
             >
               <X className="h-4 w-4" aria-hidden />
             </button>
@@ -69,24 +69,24 @@ export function CartSummary({ cart, children }: { cart: CartView; children?: Rea
 
       <dl className="mt-6 space-y-3 text-sm">
         <Row label="Subtotal">
-          <Price cents={cart.totals.subtotal} currency={currency} />
+          <Price cents={cart.totals.subtotal} currency={currency} className="font-medium" />
         </Row>
         {cart.totals.discount > 0 && (
           <Row label="Discount">
-            <span className="text-success">
+            <span className="font-medium text-success">
               −<Price cents={cart.totals.discount} currency={currency} />
             </span>
           </Row>
         )}
         <Row label="Shipping">
           {cart.totals.shipping === 0 ? (
-            <span className="text-success">Free</span>
+            <span className="font-medium text-success">Free</span>
           ) : (
-            <Price cents={cart.totals.shipping} currency={currency} />
+            <Price cents={cart.totals.shipping} currency={currency} className="font-medium" />
           )}
         </Row>
         <Row label="Tax">
-          <Price cents={cart.totals.tax} currency={currency} />
+          <Price cents={cart.totals.tax} currency={currency} className="font-medium" />
         </Row>
         <div className="border-t border-border pt-3">
           <Row label={<span className="text-base font-semibold">Total</span>}>
@@ -96,7 +96,7 @@ export function CartSummary({ cart, children }: { cart: CartView; children?: Rea
       </dl>
 
       {children && <div className="mt-6">{children}</div>}
-    </div>
+    </Card>
   );
 }
 
