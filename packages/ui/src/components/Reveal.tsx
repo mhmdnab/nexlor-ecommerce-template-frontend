@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '../lib/cn';
 
-export interface RevealProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface RevealProps extends React.HTMLAttributes<HTMLElement> {
   /** Stagger step multiplier; delay = delayIndex * --stagger-step. */
   delayIndex?: number;
   /** Render as a different element if needed (defaults to div). */
@@ -11,7 +11,7 @@ export interface RevealProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function Reveal({ delayIndex = 0, as = 'div', className, style, children, ...props }: RevealProps) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLElement>(null);
   const [shown, setShown] = useState(false);
 
   useEffect(() => {
