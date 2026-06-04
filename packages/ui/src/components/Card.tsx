@@ -1,10 +1,20 @@
 import { cn } from '../lib/cn';
 
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Add hover-lift + elevation (for clickable cards). Off by default. */
+  interactive?: boolean;
+}
+
 /** Shared card base — product card, stat card, content card all build on this. */
-export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+export function Card({ interactive = false, className, ...props }: CardProps) {
   return (
     <div
-      className={cn('rounded-lg border border-border bg-surface shadow-sm', className)}
+      className={cn(
+        'rounded-lg border border-border bg-surface shadow-sm',
+        interactive &&
+          'transition-[transform,box-shadow] duration-base ease-standard hover:-translate-y-1 hover:shadow-lift',
+        className,
+      )}
       {...props}
     />
   );
