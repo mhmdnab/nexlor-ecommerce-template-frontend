@@ -112,7 +112,7 @@ const preset: Omit<Config, 'content'> = {
         'slide-up': { from: { transform: 'translateY(8px)', opacity: '0' }, to: { transform: 'translateY(0)', opacity: '1' } },
         shimmer: { '100%': { transform: 'translateX(100%)' } },
         'reveal-up': { from: { opacity: '0', transform: 'translateY(16px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
-        marquee: { from: { transform: 'translateX(0)' }, to: { transform: 'translateX(-50%)' } },
+        marquee: { from: { transform: 'translateX(0)' }, to: { transform: 'translateX(-100%)' } },
       },
       animation: {
         'fade-in': 'fade-in var(--duration-base) var(--ease-standard)',
