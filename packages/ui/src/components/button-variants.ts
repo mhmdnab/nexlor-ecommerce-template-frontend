@@ -12,8 +12,12 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-primary text-primary-foreground shadow-sm hover:bg-primary-hover active:bg-primary-active',
-        secondary: 'bg-surface text-foreground border border-border-strong hover:bg-surface-sunken',
+        primary:
+          'bg-primary text-primary-foreground shadow-sm hover:bg-primary-hover hover:-translate-y-0.5 active:bg-primary-active',
+        gradient:
+          'bg-gradient-brand text-primary-foreground shadow-glow hover:-translate-y-0.5 hover:brightness-110',
+        secondary:
+          'bg-surface text-foreground border border-border-strong hover:bg-surface-sunken hover:-translate-y-0.5',
         ghost: 'text-foreground hover:bg-surface-sunken',
         destructive: 'bg-danger text-danger-foreground shadow-sm hover:opacity-90',
         link: 'text-primary underline-offset-4 hover:underline px-0 h-auto min-h-0',
