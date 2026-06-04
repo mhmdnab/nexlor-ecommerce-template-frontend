@@ -84,12 +84,12 @@ export default function HomePage() {
                     <ArrowRight className="h-4 w-4" aria-hidden />
                   </Link>
                 </MagneticButton>
-                {/* SECONDARY: outline ghost on dark */}
+                {/* SECONDARY: outline ghost on dark — use inverse tokens for rebrand-safety */}
                 <Link
                   href="/products?sort=createdAt&order=desc"
                   className={cn(
                     buttonVariants({ size: 'lg', variant: 'ghost' }),
-                    'border border-white/30 text-white hover:bg-white/10 hover:text-white',
+                    'border border-surface-inverse-border text-surface-inverse-foreground hover:bg-surface-inverse-foreground/10 hover:text-surface-inverse-foreground',
                   )}
                 >
                   New arrivals
@@ -219,7 +219,7 @@ export default function HomePage() {
               href="/products"
               className={cn(
                 buttonVariants({ variant: 'ghost', size: 'lg' }),
-                'mt-7 border border-white/30 text-white hover:bg-white/10 hover:text-white',
+                'mt-7 border border-surface-inverse-border text-surface-inverse-foreground hover:bg-surface-inverse-foreground/10 hover:text-surface-inverse-foreground',
               )}
             >
               Explore products

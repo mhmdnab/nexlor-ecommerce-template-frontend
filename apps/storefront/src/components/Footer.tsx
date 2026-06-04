@@ -52,7 +52,7 @@ export function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col gap-4 border-t border-border pt-6 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>{new Date().getFullYear()} {storeName}. Built on the Nexlor template.</p>
+          <p>© {new Date().getFullYear()} {storeName}. Built on the Nexlor template.</p>
           <div className="flex items-center gap-5">
             <span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-4 w-4" aria-hidden /> Secure checkout</span>
             <span className="inline-flex items-center gap-1.5"><Truck className="h-4 w-4" aria-hidden /> Fast shipping</span>

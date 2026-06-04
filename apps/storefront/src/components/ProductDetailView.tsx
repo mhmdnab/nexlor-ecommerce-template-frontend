@@ -1,7 +1,8 @@
 'use client';
 
-import { Badge, Button, Eyebrow, GlassPanel, GradientText, Price, QuantityStepper, Reveal, Skeleton, cn, useToast } from '@repo/ui';
+import { Badge, Button, Eyebrow, GlassPanel, GradientText, Price, QuantityStepper, Reveal, Skeleton, buttonVariants, cn, useToast } from '@repo/ui';
 import { Check, ShieldCheck, Truck } from 'lucide-react';
+import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 import { useCartUI } from '@/app/providers';
@@ -9,7 +10,7 @@ import { ProductGrid } from '@/components/ProductGrid';
 import { useAddToCart, useProduct, useRelated } from '@/lib/queries';
 
 export function ProductDetailView({ slug }: { slug: string }) {
-  const { data: product, isLoading, isError } = useProduct(slug);
+  const { data: product, isLoading, isError, refetch } = useProduct(slug);
   const related = useRelated(slug);
   const { openCart } = useCartUI();
   const { toast } = useToast();
@@ -23,8 +24,27 @@ export function ProductDetailView({ slug }: { slug: string }) {
   if (isError || !product)
     return (
       <div className="mx-auto max-w-7xl px-4 py-20 text-center">
-        <h1 className="font-serif text-3xl font-semibold">Product not found</h1>
-        <p className="mt-2 text-muted-foreground">It may have been removed or is no longer available.</p>
+        <Eyebrow className="justify-center">
+          {isError ? 'Something went wrong' : 'Not found'}
+        </Eyebrow>
+        <h1 className="mt-3 font-serif text-3xl font-semibold sm:text-4xl">
+          {isError ? "We couldn't load this product" : 'Product not found'}
+        </h1>
+        <p className="mx-auto mt-3 max-w-sm text-muted-foreground">
+          {isError
+            ? 'There was a problem fetching this page. Please try again.'
+            : 'It may have been removed or is no longer available.'}
+        </p>
+        <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+          <Link href="/products" className={buttonVariants({ size: 'lg' })}>
+            Browse products
+          </Link>
+          {isError && (
+            <Button variant="secondary" size="lg" onClick={() => refetch()}>
+              Try again
+            </Button>
+          )}
+        </div>
       </div>
     );
 

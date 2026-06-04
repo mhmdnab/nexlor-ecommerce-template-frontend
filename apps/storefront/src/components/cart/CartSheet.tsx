@@ -109,7 +109,6 @@ export function CartSheet() {
                     </div>
                     <div className="mt-auto flex items-center justify-between pt-2">
                       <QuantityStepper
-                        size="sm"
                         value={line.quantity}
                         max={line.stock}
                         onChange={(q) => updateItem.mutate({ itemId: line.id, quantity: q })}
