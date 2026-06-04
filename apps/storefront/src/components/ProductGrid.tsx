@@ -1,7 +1,7 @@
 'use client';
 
 import type { ProductCard as ProductCardType } from '@repo/types';
-import { EmptyState, ErrorState, Skeleton } from '@repo/ui';
+import { EmptyState, ErrorState, Reveal, Skeleton } from '@repo/ui';
 import { PackageSearch } from 'lucide-react';
 import { ProductCard } from './ProductCard';
 
@@ -48,7 +48,9 @@ export function ProductGrid({
   return (
     <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
       {products.map((p, i) => (
-        <ProductCard key={p.id} product={p} priority={i < priorityCount} />
+        <Reveal key={p.id} delayIndex={Math.min(i, 7)}>
+          <ProductCard product={p} priority={i < priorityCount} />
+        </Reveal>
       ))}
     </div>
   );
