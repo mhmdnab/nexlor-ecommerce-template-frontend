@@ -119,7 +119,7 @@ export function CartSheet() {
                         aria-label={`Remove ${line.productName}`}
                         onClick={() => removeItem.mutate(line.id)}
                         className={cn(
-                          'grid h-9 w-9 place-items-center rounded-md text-muted-foreground transition-colors',
+                          'grid h-11 w-11 place-items-center rounded-md text-muted-foreground transition-colors',
                           'hover:bg-surface-sunken hover:text-danger',
                         )}
                       >

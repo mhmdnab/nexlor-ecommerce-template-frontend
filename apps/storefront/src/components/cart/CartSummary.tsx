@@ -39,7 +39,7 @@ export function CartSummary({ cart, children }: { cart: CartView; children?: Rea
             <button
               aria-label="Remove coupon"
               onClick={() => removeCoupon.mutate()}
-              className="grid h-9 w-9 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-surface-sunken hover:text-foreground"
+              className="grid h-11 w-11 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-surface-sunken hover:text-foreground"
             >
               <X className="h-4 w-4" aria-hidden />
             </button>
