@@ -48,7 +48,7 @@ export function ProductDetailView({ slug }: { slug: string }) {
 
   return (
     // Extra bottom padding on mobile so the sticky add-to-cart bar never covers content.
-    <div className="mx-auto max-w-7xl px-4 py-10 pb-28 sm:px-6 lg:px-8 lg:pb-10">
+    <div className="mx-auto max-w-7xl px-4 pt-10 pb-28 sm:px-6 lg:px-8 lg:pb-10">
       <div className="grid gap-10 lg:grid-cols-2">
         {/* ───────────────────────── Gallery ───────────────────────── */}
         <div className="flex flex-col-reverse gap-4 sm:flex-row">
@@ -171,7 +171,7 @@ export function ProductDetailView({ slug }: { slug: string }) {
       </Reveal>
 
       {/* ─────────────── Mobile sticky add-to-cart bar ─────────────── */}
-      <GlassPanel className="fixed inset-x-0 bottom-0 z-sticky border-t border-glass-border pb-[env(safe-area-inset-bottom)] lg:hidden">
+      <GlassPanel className="fixed inset-x-0 bottom-0 z-sticky border-t pb-[env(safe-area-inset-bottom)] lg:hidden">
         <div className="flex items-center gap-3 px-4 py-3">
           <div className="min-w-0">
             <p className="truncate text-sm font-medium">{product.name}</p>

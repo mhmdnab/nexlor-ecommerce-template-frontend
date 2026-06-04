@@ -1,6 +1,6 @@
 'use client';
 
-import { Eyebrow, GradientText, Reveal, Select, buttonVariants, cn } from '@repo/ui';
+import { Eyebrow, GradientText, Select, buttonVariants, cn } from '@repo/ui';
 import { SlidersHorizontal, X } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
@@ -45,25 +45,23 @@ function ProductsInner() {
     <div>
       {/* ───────────────────────── Page header ───────────────────────── */}
       <div className="mx-auto max-w-7xl px-4 pb-2 pt-10 sm:px-6 lg:px-8">
-        <Reveal>
-          <header>
-            <Eyebrow>Shop</Eyebrow>
-            <h1 className="mt-2 font-serif text-4xl font-semibold leading-tight sm:text-5xl">
-              {activeCategory ? (
-                activeCategory.name
-              ) : (
-                <>
-                  The full <GradientText>collection</GradientText>
-                </>
-              )}
-            </h1>
-            <p className="mt-3 max-w-md text-muted-foreground">
-              {productsQuery.data
-                ? `${productsQuery.data.meta.total} considered pieces, ready to ship.`
-                : 'Browse the collection.'}
-            </p>
-          </header>
-        </Reveal>
+        <header>
+          <Eyebrow>Shop</Eyebrow>
+          <h1 className="mt-2 font-serif text-4xl font-semibold leading-tight sm:text-5xl">
+            {activeCategory ? (
+              activeCategory.name
+            ) : (
+              <>
+                The full <GradientText>collection</GradientText>
+              </>
+            )}
+          </h1>
+          <p className="mt-3 max-w-md text-muted-foreground">
+            {productsQuery.data
+              ? `${productsQuery.data.meta.total} considered pieces, ready to ship.`
+              : 'Browse the collection.'}
+          </p>
+        </header>
 
         {/* Active filter chips */}
         {(category || q) && (
