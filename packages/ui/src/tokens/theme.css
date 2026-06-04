@@ -34,6 +34,23 @@
   --accent: 243 60% 96%;
   --accent-foreground: 243 72% 45%;
 
+  /* ---- brand gradient (rebrand: change --gradient-from/-to, or just shift --primary) ---- */
+  --gradient-from: 243 75% 59%;   /* indigo — mirrors --primary */
+  --gradient-to: 270 70% 60%;     /* violet */
+  --gradient-brand: linear-gradient(135deg, hsl(var(--gradient-from)), hsl(var(--gradient-to)));
+  --gradient-brand-soft: linear-gradient(135deg, hsl(var(--gradient-from) / 0.12), hsl(var(--gradient-to) / 0.12));
+
+  /* ---- inverse "drama" surface (dark bands inside the light canvas) ---- */
+  --surface-inverse: 250 24% 9%;
+  --surface-inverse-foreground: 40 22% 95%;
+  --surface-inverse-muted: 250 10% 65%;
+  --surface-inverse-border: 250 14% 22%;
+
+  /* ---- glass (OVERLAY ONLY: header, sheet, dialog) ---- */
+  --glass-tint: 40 33% 98%;       /* mirrors --background */
+  --glass-border: 40 13% 87%;
+  --glass-blur: 12px;
+
   /* ---- semantic (each: base / -foreground / -subtle) ---- */
   --success: 152 56% 34%;
   --success-foreground: 0 0% 100%;
@@ -59,12 +76,15 @@
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 24px;
+  --radius-2xl: 28px;
 
   /* ---- elevation (resting -> raised -> overlay -> modal) ---- */
   --shadow-sm: 0 1px 2px 0 hsl(30 20% 10% / 0.05);
   --shadow-md: 0 2px 8px -2px hsl(30 20% 10% / 0.08), 0 1px 2px hsl(30 20% 10% / 0.04);
   --shadow-lg: 0 8px 24px -6px hsl(30 20% 10% / 0.12), 0 2px 6px hsl(30 20% 10% / 0.06);
   --shadow-xl: 0 24px 48px -12px hsl(30 20% 10% / 0.20);
+  --shadow-lift: 0 16px 40px -12px hsl(30 20% 10% / 0.18), 0 4px 10px -4px hsl(30 20% 10% / 0.10);
+  --shadow-glow: 0 10px 40px -10px hsl(var(--primary) / 0.45);
 
   /* ---- motion ---- */
   --duration-fast: 150ms;
@@ -72,6 +92,9 @@
   --duration-slow: 300ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --duration-reveal: 400ms;
+  --stagger-step: 40ms;
 
   /* ---- typography (apps inject --font-sans / --font-serif via next/font) ---- */
   --font-sans-fallback: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -100,6 +123,20 @@
   --accent: 243 40% 20%;
   --accent-foreground: 243 80% 84%;
 
+  --gradient-from: 239 84% 70%;
+  --gradient-to: 270 80% 75%;
+  --gradient-brand: linear-gradient(135deg, hsl(var(--gradient-from)), hsl(var(--gradient-to)));
+  --gradient-brand-soft: linear-gradient(135deg, hsl(var(--gradient-from) / 0.16), hsl(var(--gradient-to) / 0.16));
+
+  --surface-inverse: 250 22% 12%;
+  --surface-inverse-foreground: 40 22% 95%;
+  --surface-inverse-muted: 250 10% 68%;
+  --surface-inverse-border: 250 12% 26%;
+
+  --glass-tint: 30 9% 8%;         /* mirrors dark --background */
+  --glass-border: 30 7% 22%;
+  --glass-blur: 14px;
+
   --success: 150 50% 50%;
   --success-foreground: 150 60% 8%;
   --success-subtle: 152 40% 16%;
@@ -122,6 +159,8 @@
   --shadow-md: 0 2px 8px -2px hsl(0 0% 0% / 0.40), 0 1px 2px hsl(0 0% 0% / 0.30);
   --shadow-lg: 0 8px 24px -6px hsl(0 0% 0% / 0.50), 0 2px 6px hsl(0 0% 0% / 0.40);
   --shadow-xl: 0 24px 48px -12px hsl(0 0% 0% / 0.60);
+  --shadow-lift: 0 16px 40px -12px hsl(0 0% 0% / 0.55), 0 4px 10px -4px hsl(0 0% 0% / 0.40);
+  --shadow-glow: 0 10px 44px -10px hsl(var(--primary) / 0.55);
 }
 
 /* ---- base ---- */
