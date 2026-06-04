@@ -4,7 +4,7 @@ import { cn } from '@repo/ui';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Menu, Search, ShoppingBag, User, X } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useCartUI } from '@/app/providers';
 import { useCart, useMe, useSettings } from '@/lib/queries';
@@ -34,16 +34,35 @@ export function Header() {
 
   useEffect(() => setMobileOpen(false), [pathname]);
 
+  const searchParams = useSearchParams();
   const count = cart?.itemCount ?? 0;
   const storeName = settings?.branding.storeName ?? 'Nexlor';
+
+  /**
+   * Determine whether a nav item is "active".
+   * For items with a query string (e.g. /products?category=apparel) we match
+   * both the pathname and the category param. For plain paths we match pathname
+   * exactly. "Shop all" (/products with no category) is active only when there
+   * is no category param.
+   *
+   * Flag: this heuristic covers the current NAV shape. If NAV items ever use
+   * additional query params or nested paths, revisit this logic.
+   */
+  function isActive(href: string) {
+    const [hrefPath, hrefQuery] = href.split('?');
+    if (pathname !== hrefPath) return false;
+    if (!hrefQuery) return !searchParams.get('category');
+    const params = new URLSearchParams(hrefQuery);
+    return params.get('category') === searchParams.get('category');
+  }
 
   return (
     <header
       className={cn(
-        'sticky top-0 z-sticky border-b transition-all duration-base',
+        'sticky top-0 z-sticky transition-all duration-base',
         scrolled
-          ? 'border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70'
-          : 'border-transparent bg-background',
+          ? 'border-b border-glass-border bg-glass-tint/80 supports-[backdrop-filter]:bg-glass-tint/65 supports-[backdrop-filter]:backdrop-blur-glass'
+          : 'border-b border-transparent bg-transparent',
       )}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
@@ -61,15 +80,30 @@ export function Header() {
         </Link>
 
         <nav className="ml-6 hidden items-center gap-6 md:flex" aria-label="Primary">
-          {NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {item.label}
-            </Link>
-          ))}
+          {NAV.map((item) => {
+            const active = isActive(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={active ? 'page' : undefined}
+                className={cn(
+                  'relative flex min-h-[44px] items-center text-sm font-medium transition-colors',
+                  active
+                    ? 'text-foreground'
+                    : 'text-muted-foreground hover:text-foreground',
+                )}
+              >
+                {item.label}
+                {active && (
+                  <span
+                    aria-hidden
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-brand rounded-full"
+                  />
+                )}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="ml-auto flex items-center gap-1">
