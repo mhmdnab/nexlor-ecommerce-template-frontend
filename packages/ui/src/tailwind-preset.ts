@@ -48,6 +48,9 @@ const preset: Omit<Config, 'content'> = {
         'gradient-brand': 'var(--gradient-brand)',
         'gradient-brand-soft': 'var(--gradient-brand-soft)',
       },
+      backdropBlur: {
+        glass: 'var(--glass-blur)',
+      },
       borderRadius: {
         sm: 'var(--radius-sm)',
         md: 'var(--radius-md)',

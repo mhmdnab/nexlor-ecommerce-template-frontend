@@ -34,9 +34,9 @@
   --accent: 243 60% 96%;
   --accent-foreground: 243 72% 45%;
 
-  /* ---- brand gradient (rebrand: change --gradient-from/-to, or just shift --primary) ---- */
-  --gradient-from: 243 75% 59%;   /* indigo — mirrors --primary */
-  --gradient-to: 270 70% 60%;     /* violet */
+  /* ---- brand gradient: start follows --primary automatically; set --gradient-to for a custom 2nd stop ---- */
+  --gradient-from: var(--primary);
+  --gradient-to: 270 70% 60%;     /* violet — secondary brand stop */
   --gradient-brand: linear-gradient(135deg, hsl(var(--gradient-from)), hsl(var(--gradient-to)));
   --gradient-brand-soft: linear-gradient(135deg, hsl(var(--gradient-from) / 0.12), hsl(var(--gradient-to) / 0.12));
 
@@ -123,15 +123,15 @@
   --accent: 243 40% 20%;
   --accent-foreground: 243 80% 84%;
 
-  --gradient-from: 239 84% 70%;
+  --gradient-from: var(--primary);
   --gradient-to: 270 80% 75%;
   --gradient-brand: linear-gradient(135deg, hsl(var(--gradient-from)), hsl(var(--gradient-to)));
-  --gradient-brand-soft: linear-gradient(135deg, hsl(var(--gradient-from) / 0.16), hsl(var(--gradient-to) / 0.16));
+  --gradient-brand-soft: linear-gradient(135deg, hsl(var(--gradient-from) / 0.16), hsl(var(--gradient-to) / 0.16)); /* slightly stronger alpha on dark */
 
-  --surface-inverse: 250 22% 12%;
+  --surface-inverse: 250 18% 14%;
   --surface-inverse-foreground: 40 22% 95%;
   --surface-inverse-muted: 250 10% 68%;
-  --surface-inverse-border: 250 12% 26%;
+  --surface-inverse-border: 250 14% 30%;
 
   --glass-tint: 30 9% 8%;         /* mirrors dark --background */
   --glass-border: 30 7% 22%;
