@@ -93,7 +93,7 @@ export function Header() {
   return (
     <header
       className={cn(
-        'sticky top-0 z-sticky transition-all duration-base',
+        'sticky top-0 z-sticky transition-[background-color,border-color,backdrop-filter] duration-base',
         scrolled
           ? 'border-b border-glass-border bg-glass-tint/80 supports-[backdrop-filter]:bg-glass-tint/65 supports-[backdrop-filter]:backdrop-blur-glass'
           : 'border-b border-transparent bg-transparent',
