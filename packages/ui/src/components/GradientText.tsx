@@ -5,7 +5,7 @@ export function GradientText({ className, ...props }: React.HTMLAttributes<HTMLS
   return (
     <span
       className={cn(
-        'bg-gradient-brand bg-clip-text text-transparent',
+        'bg-gradient-brand bg-clip-text [-webkit-background-clip:text] text-transparent',
         '[@supports(not(background-clip:text))]:text-primary',
         className,
       )}

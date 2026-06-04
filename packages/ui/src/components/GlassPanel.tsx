@@ -8,7 +8,7 @@ export function GlassPanel({ className, ...props }: React.HTMLAttributes<HTMLDiv
   return (
     <div
       className={cn(
-        'border-glass-border bg-glass-tint/80 supports-[backdrop-filter]:bg-glass-tint/65',
+        'border border-glass-border bg-glass-tint/80 supports-[backdrop-filter]:bg-glass-tint/65',
         'supports-[backdrop-filter]:backdrop-blur-glass',
         className,
       )}
