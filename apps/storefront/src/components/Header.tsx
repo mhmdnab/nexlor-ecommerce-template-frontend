@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Menu, Search, ShoppingBag, User, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useCartUI } from '@/app/providers';
 import { useCart, useMe, useSettings } from '@/lib/queries';
 
@@ -15,6 +15,59 @@ const NAV = [
   { href: '/products?category=footwear', label: 'Footwear' },
   { href: '/products?category=accessories', label: 'Accessories' },
 ];
+
+/**
+ * Inner nav component that reads useSearchParams for active-state detection.
+ * Must be Suspense-wrapped because useSearchParams opts the subtree out of
+ * static pre-rendering (Next.js App Router requirement).
+ *
+ * Active-state heuristic:
+ *   - "Shop all" (/products, no query) → active when pathname matches AND no
+ *     category param is present.
+ *   - Category links (/products?category=X) → active when pathname AND category
+ *     param both match.
+ * Flag: if NAV items grow to use additional query params or nested paths,
+ * revisit this logic.
+ */
+function PrimaryNav() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  function isActive(href: string) {
+    const [hrefPath, hrefQuery] = href.split('?');
+    if (pathname !== hrefPath) return false;
+    if (!hrefQuery) return !searchParams.get('category');
+    const params = new URLSearchParams(hrefQuery);
+    return params.get('category') === searchParams.get('category');
+  }
+
+  return (
+    <nav className="ml-6 hidden items-center gap-6 md:flex" aria-label="Primary">
+      {NAV.map((item) => {
+        const active = isActive(item.href);
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            aria-current={active ? 'page' : undefined}
+            className={cn(
+              'relative flex min-h-[44px] items-center text-sm font-medium transition-colors',
+              active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
+            )}
+          >
+            {item.label}
+            {active && (
+              <span
+                aria-hidden
+                className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-gradient-brand"
+              />
+            )}
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
 
 export function Header() {
   const { openCart } = useCartUI();
@@ -34,27 +87,8 @@ export function Header() {
 
   useEffect(() => setMobileOpen(false), [pathname]);
 
-  const searchParams = useSearchParams();
   const count = cart?.itemCount ?? 0;
   const storeName = settings?.branding.storeName ?? 'Nexlor';
-
-  /**
-   * Determine whether a nav item is "active".
-   * For items with a query string (e.g. /products?category=apparel) we match
-   * both the pathname and the category param. For plain paths we match pathname
-   * exactly. "Shop all" (/products with no category) is active only when there
-   * is no category param.
-   *
-   * Flag: this heuristic covers the current NAV shape. If NAV items ever use
-   * additional query params or nested paths, revisit this logic.
-   */
-  function isActive(href: string) {
-    const [hrefPath, hrefQuery] = href.split('?');
-    if (pathname !== hrefPath) return false;
-    if (!hrefQuery) return !searchParams.get('category');
-    const params = new URLSearchParams(hrefQuery);
-    return params.get('category') === searchParams.get('category');
-  }
 
   return (
     <header
@@ -79,32 +113,29 @@ export function Header() {
           {storeName}
         </Link>
 
-        <nav className="ml-6 hidden items-center gap-6 md:flex" aria-label="Primary">
-          {NAV.map((item) => {
-            const active = isActive(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-current={active ? 'page' : undefined}
-                className={cn(
-                  'relative flex min-h-[44px] items-center text-sm font-medium transition-colors',
-                  active
-                    ? 'text-foreground'
-                    : 'text-muted-foreground hover:text-foreground',
-                )}
-              >
-                {item.label}
-                {active && (
-                  <span
-                    aria-hidden
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-brand rounded-full"
-                  />
-                )}
-              </Link>
-            );
-          })}
-        </nav>
+        {/*
+         * Suspense boundary required by Next.js 15 App Router: useSearchParams
+         * inside PrimaryNav would suspend static generation without it.
+         * Fallback renders static (inactive) nav links so there's no layout
+         * shift on hydration.
+         */}
+        <Suspense
+          fallback={
+            <nav className="ml-6 hidden items-center gap-6 md:flex" aria-label="Primary">
+              {NAV.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="relative flex min-h-[44px] items-center text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+          }
+        >
+          <PrimaryNav />
+        </Suspense>
 
         <div className="ml-auto flex items-center gap-1">
           <Link
