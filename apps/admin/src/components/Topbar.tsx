@@ -31,7 +31,7 @@ export function Topbar({ title }: { title: string }) {
     : '–';
 
   return (
-    <header className="sticky top-0 z-sticky flex h-16 items-center gap-4 border-b border-border bg-background/85 px-4 backdrop-blur sm:px-6">
+    <header className="sticky top-0 z-sticky flex h-16 items-center gap-4 border-b border-glass-border bg-glass-tint/80 px-4 supports-[backdrop-filter]:bg-glass-tint/65 supports-[backdrop-filter]:backdrop-blur-glass sm:px-6">
       <h1 className="text-lg font-semibold">{title}</h1>
       <div className="ml-auto flex items-center gap-2">
         <ThemeToggle />
