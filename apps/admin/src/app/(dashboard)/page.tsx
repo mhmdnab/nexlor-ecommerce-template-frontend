@@ -4,6 +4,7 @@ import {
   Card,
   EmptyState,
   ErrorState,
+  GradientText,
   Price,
   Skeleton,
   StatusBadge,
@@ -38,7 +39,7 @@ export default function OverviewPage() {
           ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-28 rounded-lg" />)
           : overview.data && (
               <>
-                <StatCard label="Revenue (30d)" value={formatMoney(overview.data.stats.revenue.value)} delta={overview.data.stats.revenue.delta} />
+                <StatCard accent label="Revenue (30d)" value={formatMoney(overview.data.stats.revenue.value)} delta={overview.data.stats.revenue.delta} />
                 <StatCard label="Orders (30d)" value={formatNumber(overview.data.stats.orders.value)} delta={overview.data.stats.orders.delta} />
                 <StatCard label="Avg. order value" value={formatMoney(overview.data.stats.averageOrderValue.value)} delta={overview.data.stats.averageOrderValue.delta} />
                 <StatCard label="New customers" value={formatNumber(overview.data.stats.newCustomers.value)} delta={overview.data.stats.newCustomers.delta} />
@@ -138,12 +139,16 @@ export default function OverviewPage() {
   );
 }
 
-function StatCard({ label, value, delta }: { label: string; value: string; delta: number | null }) {
+function StatCard({ label, value, delta, accent = false }: { label: string; value: string; delta: number | null; accent?: boolean }) {
   const positive = (delta ?? 0) >= 0;
   return (
-    <Card className="p-5">
+    <Card interactive className={cn('p-5', accent && 'border-t-2 border-t-transparent [border-image:var(--gradient-brand)_1]')}>
       <p className="text-sm text-muted-foreground">{label}</p>
-      <p className="tabular mt-2 text-3xl font-semibold tracking-tight">{value}</p>
+      {accent ? (
+        <GradientText className="tabular mt-2 block text-3xl font-semibold tracking-tight">{value}</GradientText>
+      ) : (
+        <p className="tabular mt-2 text-3xl font-semibold tracking-tight">{value}</p>
+      )}
       {delta !== null ? (
         <p className={cn('mt-1 inline-flex items-center gap-1 text-sm', positive ? 'text-success' : 'text-danger')}>
           {positive ? <ArrowUpRight className="h-4 w-4" aria-hidden /> : <ArrowDownRight className="h-4 w-4" aria-hidden />}
