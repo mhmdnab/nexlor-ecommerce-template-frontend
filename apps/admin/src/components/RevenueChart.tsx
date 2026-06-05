@@ -19,7 +19,6 @@ export function RevenueChart({ data }: { data: { date: string; revenue: number; 
 
   return (
     <figure role="img" aria-label={srLabel}>
-      <figcaption className="sr-only">{srLabel}</figcaption>
       <ResponsiveContainer width="100%" height={280}>
         <AreaChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: -8 }}>
           <defs>

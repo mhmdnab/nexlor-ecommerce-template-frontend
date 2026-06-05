@@ -142,7 +142,8 @@ export default function OverviewPage() {
 function StatCard({ label, value, delta, accent = false }: { label: string; value: string; delta: number | null; accent?: boolean }) {
   const positive = (delta ?? 0) >= 0;
   return (
-    <Card interactive className={cn('p-5', accent && 'border-t-2 border-t-transparent [border-image:var(--gradient-brand)_1]')}>
+    <Card className={cn('p-5', accent && 'relative overflow-hidden')}>
+      {accent && <span className="absolute inset-x-0 top-0 h-0.5 bg-gradient-brand" aria-hidden />}
       <p className="text-sm text-muted-foreground">{label}</p>
       {accent ? (
         <GradientText className="tabular mt-2 block text-3xl font-semibold tracking-tight">{value}</GradientText>
