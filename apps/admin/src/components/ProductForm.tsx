@@ -34,7 +34,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
-import { useAdminCategories, usePresignUpload, useSaveProduct } from '@/lib/queries';
+import { useAdminCategories, useAdminVariantPresets, usePresignUpload, useSaveProduct } from '@/lib/queries';
 
 interface VariantDraft {
   id?: string;
@@ -58,6 +58,7 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
   const save = useSaveProduct();
   const presign = usePresignUpload();
   const { data: categories } = useAdminCategories();
+  const { data: presets } = useAdminVariantPresets();
   const fileInput = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState(product?.name ?? '');
@@ -164,6 +165,22 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
     touch();
   }
 
+  function applyPreset(presetId: string) {
+    const preset = presets?.find((p) => p.id === presetId);
+    if (!preset) return;
+    setVariants((prev) => {
+      const isLoneDefault =
+        prev.length === 1 && prev[0].name === 'Default' && !prev[0].sku.trim();
+      const base = isLoneDefault ? [] : prev;
+      const existing = new Set(base.map((v) => v.name.trim().toLowerCase()));
+      const added = preset.options
+        .filter((label) => !existing.has(label.trim().toLowerCase()))
+        .map((label) => ({ name: label, sku: '', price: '', stock: '0' }));
+      return [...base, ...added];
+    });
+    touch();
+  }
+
   return (
     <div className="pb-24">
       {/* Breadcrumb */}
@@ -244,16 +261,35 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
                   <Layers className="h-4 w-4 text-muted-foreground" aria-hidden />
                   <CardTitle>Variants</CardTitle>
                 </div>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={() => {
-                    setVariants((v) => [...v, { name: '', sku: '', price: '', stock: '0' }]);
-                    touch();
-                  }}
-                >
-                  <Plus className="h-4 w-4" aria-hidden /> Add variant
-                </Button>
+                <div className="flex items-center gap-2">
+                  {presets && presets.length > 0 && (
+                    <Select
+                      aria-label="Apply a variant preset"
+                      value=""
+                      onChange={(e) => {
+                        if (e.target.value) applyPreset(e.target.value);
+                      }}
+                      className="h-9 w-auto text-sm"
+                    >
+                      <option value="">Apply preset…</option>
+                      {presets.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.name} ({p.options.length})
+                        </option>
+                      ))}
+                    </Select>
+                  )}
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => {
+                      setVariants((v) => [...v, { name: '', sku: '', price: '', stock: '0' }]);
+                      touch();
+                    }}
+                  >
+                    <Plus className="h-4 w-4" aria-hidden /> Add variant
+                  </Button>
+                </div>
               </div>
               <CardDescription>
                 Each variant has its own SKU and stock level. Leave price blank to inherit the
