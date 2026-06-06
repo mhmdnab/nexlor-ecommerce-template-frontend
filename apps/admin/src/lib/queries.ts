@@ -12,6 +12,7 @@ import type {
   ProductDetail,
   PublicUser,
   StoreSettings,
+  VariantPreset,
 } from '@repo/types';
 import {
   keepPreviousData,
@@ -79,6 +80,7 @@ export const qk = {
   customers: (s: string) => ['admin-customers', s] as const,
   customer: (id: string) => ['admin-customer', id] as const,
   coupons: (s: string) => ['admin-coupons', s] as const,
+  variantPresets: ['admin-variant-presets'] as const,
   settings: ['admin-settings'] as const,
 };
 
@@ -201,6 +203,31 @@ export function useDeleteCategory() {
   return useMutation({
     mutationFn: (id: string) => apiFetch(`/admin/categories/${id}`, { method: 'DELETE' }),
     onSuccess: () => qc.invalidateQueries({ queryKey: qk.categories }),
+  });
+}
+
+// ---- variant presets ----
+export function useAdminVariantPresets() {
+  return useQuery({
+    queryKey: qk.variantPresets,
+    queryFn: () => apiFetch<VariantPreset[]>('/admin/variant-presets'),
+  });
+}
+export function useSaveVariantPreset() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (vars: { id?: string; body: unknown }) =>
+      vars.id
+        ? apiJson(`/admin/variant-presets/${vars.id}`, 'PUT', vars.body)
+        : apiJson('/admin/variant-presets', 'POST', vars.body),
+    onSuccess: () => qc.invalidateQueries({ queryKey: qk.variantPresets }),
+  });
+}
+export function useDeleteVariantPreset() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => apiFetch(`/admin/variant-presets/${id}`, { method: 'DELETE' }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: qk.variantPresets }),
   });
 }
 
