@@ -9,6 +9,10 @@
  */
 
 :root {
+  /* Native controls (select & option popups, scrollbars, date pickers, autofill)
+     follow color-scheme — without it the browser paints them light on a dark page. */
+  color-scheme: light;
+
   /* ---- surfaces ---- */
   --background: 40 33% 98%;
   --surface: 0 0% 100%;
@@ -102,6 +106,8 @@
 }
 
 .dark {
+  color-scheme: dark;
+
   --background: 30 9% 8%;
   --surface: 30 8% 11%;
   --surface-raised: 30 8% 14%;
