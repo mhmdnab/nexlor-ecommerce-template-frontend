@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   Package,
   FolderTree,
+  Layers,
   ShoppingCart,
   Users,
   Ticket,
@@ -26,6 +27,7 @@ const NAV_GROUPS: { label: string; items: { href: string; label: string; icon: R
     items: [
       { href: '/products', label: 'Products', icon: Package },
       { href: '/categories', label: 'Categories', icon: FolderTree },
+      { href: '/variants', label: 'Variants', icon: Layers },
     ],
   },
   {

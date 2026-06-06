@@ -12,6 +12,7 @@ const TITLES: { match: (p: string) => boolean; title: string }[] = [
   { match: (p) => p === '/', title: 'Dashboard' },
   { match: (p) => p.startsWith('/products'), title: 'Products' },
   { match: (p) => p.startsWith('/categories'), title: 'Categories' },
+  { match: (p) => p.startsWith('/variants'), title: 'Variants' },
   { match: (p) => p.startsWith('/orders'), title: 'Orders' },
   { match: (p) => p.startsWith('/customers'), title: 'Customers' },
   { match: (p) => p.startsWith('/coupons'), title: 'Coupons' },
