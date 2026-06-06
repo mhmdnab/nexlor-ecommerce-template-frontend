@@ -269,7 +269,7 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
                     errors[`variant-${i}`] && 'rounded-md border border-danger/40 p-2',
                   )}
                 >
-                  <Field label={i === 0 ? 'Name' : ''} error={i === 0 ? undefined : errors[`variant-${i}`]}>
+                  <Field label={i === 0 ? 'Name' : ''} error={errors[`variant-${i}`]}>
                     {({ id }) => (
                       <Input
                         id={id}
@@ -426,9 +426,9 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
                           setImages((p) => p.filter((_, j) => j !== i));
                           touch();
                         }}
-                        className="absolute bottom-1 right-1 grid h-6 w-6 place-items-center rounded bg-danger text-danger-foreground opacity-0 group-hover:opacity-100"
+                        className="absolute bottom-1 right-1 grid h-8 w-8 place-items-center rounded bg-danger p-1 text-danger-foreground opacity-0 group-hover:opacity-100"
                       >
-                        <X className="h-3.5 w-3.5" aria-hidden />
+                        <X className="h-4 w-4" aria-hidden />
                       </button>
                     </li>
                   ))}

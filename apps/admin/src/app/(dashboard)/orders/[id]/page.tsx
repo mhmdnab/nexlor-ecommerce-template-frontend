@@ -4,7 +4,13 @@ import { OrderStatus } from '@repo/types';
 import {
   Button,
   Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
   Dialog,
+  ErrorState,
+  Eyebrow,
   Price,
   Select,
   Skeleton,
@@ -13,7 +19,7 @@ import {
   formatDateTime,
   useToast,
 } from '@repo/ui';
-import { Check } from 'lucide-react';
+import { Check, MapPin, ShoppingBag, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { use, useState } from 'react';
@@ -24,19 +30,32 @@ const DESTRUCTIVE = new Set<OrderStatus>([OrderStatus.CANCELLED, OrderStatus.REF
 
 export default function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const { data: order, isLoading } = useAdminOrder(id);
+  const { data: order, isLoading, isError, refetch } = useAdminOrder(id);
   const updateStatus = useUpdateOrderStatus();
   const { toast } = useToast();
   const [next, setNext] = useState<OrderStatus | ''>('');
   const [confirm, setConfirm] = useState<OrderStatus | null>(null);
 
-  if (isLoading || !order) {
+  if (isLoading) {
     return (
-      <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-        <Skeleton className="h-96 rounded-lg" />
-        <Skeleton className="h-64 rounded-lg" />
+      <div className="space-y-5">
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-7 w-56" />
+        </div>
+        <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+          <Skeleton className="h-96 rounded-lg" />
+          <div className="space-y-4">
+            <Skeleton className="h-64 rounded-lg" />
+            <Skeleton className="h-32 rounded-lg" />
+          </div>
+        </div>
       </div>
     );
+  }
+
+  if (isError || !order) {
+    return <ErrorState description="Order not found or failed to load." onRetry={() => refetch()} />;
   }
 
   async function apply(status: OrderStatus) {
@@ -61,20 +80,28 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-center gap-3">
+      {/* Page header */}
+      <div>
         <Link href="/orders" className="text-sm text-muted-foreground hover:text-foreground">← Orders</Link>
-        <h1 className="tabular text-xl font-semibold">{order.orderNumber}</h1>
-        <StatusBadge status={order.status} />
-        <span className="text-sm text-muted-foreground">{formatDateTime(order.createdAt)}</span>
+        <div className="mt-1 flex flex-wrap items-center gap-3">
+          <Eyebrow>Order</Eyebrow>
+          <h1 className="tabular text-xl font-semibold">{order.orderNumber}</h1>
+          <StatusBadge status={order.status} />
+          <span className="tabular text-sm text-muted-foreground">{formatDateTime(order.createdAt)}</span>
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
         <div className="space-y-6">
           {/* Line items */}
           <Card className="overflow-hidden">
-            <div className="p-5 pb-3">
-              <h2 className="text-base font-semibold">Items</h2>
-            </div>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <ShoppingBag className="h-4 w-4 text-muted-foreground" aria-hidden />
+                <CardTitle>Items</CardTitle>
+              </div>
+              <CardDescription>Products included in this order.</CardDescription>
+            </CardHeader>
             <ul className="divide-y divide-border">
               {order.items.map((item) => (
                 <li key={item.id} className="flex items-center gap-4 px-5 py-3">
@@ -83,15 +110,16 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium">{item.productName}</p>
-                    <p className="text-xs text-muted-foreground">{item.variantName} · {item.sku}</p>
+                    <p className="tabular text-xs text-muted-foreground">{item.variantName} · {item.sku}</p>
                   </div>
                   <span className="tabular text-sm text-muted-foreground">
                     {item.quantity} × <Price cents={item.unitPrice} currency={order.currency} />
                   </span>
-                  <Price cents={item.lineTotal} currency={order.currency} className="w-20 text-right text-sm font-medium" />
+                  <Price cents={item.lineTotal} currency={order.currency} className="tabular w-20 text-right text-sm font-medium" />
                 </li>
               ))}
             </ul>
+            {/* Server-driven totals — NO client math */}
             <dl className="space-y-2 border-t border-border p-5 text-sm">
               <Row label="Subtotal"><Price cents={order.totals.subtotal} currency={order.currency} /></Row>
               {order.totals.discount > 0 && (
@@ -103,7 +131,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               <Row label="Tax"><Price cents={order.totals.tax} currency={order.currency} /></Row>
               <div className="border-t border-border pt-2">
                 <Row label={<span className="font-semibold text-foreground">Total</span>}>
-                  <Price cents={order.totals.total} currency={order.currency} className="font-semibold" />
+                  <Price cents={order.totals.total} currency={order.currency} className="tabular font-semibold" />
                 </Row>
               </div>
             </dl>
@@ -113,70 +141,90 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Status control */}
-          <Card className="space-y-4 p-5">
-            <h2 className="text-base font-semibold">Status</h2>
-            {/* Vertical timeline */}
-            <ol className="space-y-3">
-              {FLOW.map((step, i) => {
-                const done = !isTerminal && i <= currentIndex;
-                const current = !isTerminal && i === currentIndex;
-                return (
-                  <li key={step} className="flex items-center gap-3">
-                    <span
-                      className={cn(
-                        'grid h-6 w-6 place-items-center rounded-full border text-xs',
-                        done ? 'border-primary bg-primary text-primary-foreground' : 'border-border-strong text-muted-foreground',
-                      )}
-                    >
-                      {done ? <Check className="h-3.5 w-3.5" aria-hidden /> : i + 1}
-                    </span>
-                    <span className={cn('text-sm', current ? 'font-semibold' : done ? 'text-foreground' : 'text-muted-foreground')}>
-                      {step.charAt(0) + step.slice(1).toLowerCase()}
-                    </span>
+          <Card>
+            <CardHeader>
+              <CardTitle>Order status</CardTitle>
+              <CardDescription>Update the fulfillment stage for this order.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Vertical timeline */}
+              <ol className="space-y-3">
+                {FLOW.map((step, i) => {
+                  const done = !isTerminal && i <= currentIndex;
+                  const current = !isTerminal && i === currentIndex;
+                  return (
+                    <li key={step} className="flex items-center gap-3">
+                      <span
+                        className={cn(
+                          'grid h-6 w-6 place-items-center rounded-full border text-xs',
+                          done ? 'border-primary bg-primary text-primary-foreground' : 'border-border-strong text-muted-foreground',
+                        )}
+                      >
+                        {done ? <Check className="h-3.5 w-3.5" aria-hidden /> : i + 1}
+                      </span>
+                      <span className={cn('text-sm', current ? 'font-semibold' : done ? 'text-foreground' : 'text-muted-foreground')}>
+                        {step.charAt(0) + step.slice(1).toLowerCase()}
+                      </span>
+                    </li>
+                  );
+                })}
+                {isTerminal && (
+                  <li className="flex items-center gap-3">
+                    <span className="grid h-6 w-6 place-items-center rounded-full border border-danger bg-danger-subtle text-xs text-danger">!</span>
+                    <span className="text-sm font-semibold text-danger">{order.status.charAt(0) + order.status.slice(1).toLowerCase()}</span>
                   </li>
-                );
-              })}
-              {isTerminal && (
-                <li className="flex items-center gap-3">
-                  <span className="grid h-6 w-6 place-items-center rounded-full border border-danger bg-danger-subtle text-xs text-danger">!</span>
-                  <span className="text-sm font-semibold text-danger">{order.status.charAt(0) + order.status.slice(1).toLowerCase()}</span>
-                </li>
-              )}
-            </ol>
+                )}
+              </ol>
 
-            <div className="space-y-2 border-t border-border pt-4">
-              <Select value={next} onChange={(e) => setNext(e.target.value as OrderStatus)} aria-label="New status">
-                <option value="">Change status…</option>
-                {Object.values(OrderStatus).filter((s) => s !== order.status).map((s) => (
-                  <option key={s} value={s}>{s.charAt(0) + s.slice(1).toLowerCase()}</option>
-                ))}
-              </Select>
-              <Button className="w-full" disabled={!next} loading={updateStatus.isPending} onClick={requestChange}>
-                Update status
-              </Button>
-            </div>
+              <div className="space-y-2 border-t border-border pt-4">
+                <Select value={next} onChange={(e) => setNext(e.target.value as OrderStatus)} aria-label="New status">
+                  <option value="">Change status…</option>
+                  {Object.values(OrderStatus).filter((s) => s !== order.status).map((s) => (
+                    <option key={s} value={s}>{s.charAt(0) + s.slice(1).toLowerCase()}</option>
+                  ))}
+                </Select>
+                <Button className="w-full" disabled={!next} loading={updateStatus.isPending} onClick={requestChange}>
+                  Update status
+                </Button>
+              </div>
+            </CardContent>
           </Card>
 
           {/* Customer */}
-          <Card className="space-y-2 p-5">
-            <h2 className="text-base font-semibold">Customer</h2>
-            <p className="text-sm">{order.email}</p>
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <User className="h-4 w-4 text-muted-foreground" aria-hidden />
+                <CardTitle>Customer</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm">{order.email}</p>
+            </CardContent>
           </Card>
 
           {/* Shipping address */}
-          <Card className="space-y-1 p-5 text-sm">
-            <h2 className="mb-1 text-base font-semibold">Shipping address</h2>
-            <p>{order.shippingAddress.fullName}</p>
-            <p className="text-muted-foreground">{order.shippingAddress.line1}</p>
-            {order.shippingAddress.line2 && <p className="text-muted-foreground">{order.shippingAddress.line2}</p>}
-            <p className="text-muted-foreground">
-              {order.shippingAddress.city}{order.shippingAddress.region ? `, ${order.shippingAddress.region}` : ''} {order.shippingAddress.postalCode}
-            </p>
-            <p className="text-muted-foreground">{order.shippingAddress.country}</p>
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-muted-foreground" aria-hidden />
+                <CardTitle>Shipping address</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-1 text-sm">
+              <p className="font-medium">{order.shippingAddress.fullName}</p>
+              <p className="text-muted-foreground">{order.shippingAddress.line1}</p>
+              {order.shippingAddress.line2 && <p className="text-muted-foreground">{order.shippingAddress.line2}</p>}
+              <p className="tabular text-muted-foreground">
+                {order.shippingAddress.city}{order.shippingAddress.region ? `, ${order.shippingAddress.region}` : ''} {order.shippingAddress.postalCode}
+              </p>
+              <p className="text-muted-foreground">{order.shippingAddress.country}</p>
+            </CardContent>
           </Card>
         </div>
       </div>
 
+      {/* Confirm destructive status change */}
       <Dialog
         open={confirm !== null}
         onOpenChange={(o) => !o && setConfirm(null)}
@@ -199,7 +247,7 @@ function Row({ label, children }: { label: React.ReactNode; children: React.Reac
   return (
     <div className="flex justify-between">
       <dt className="text-muted-foreground">{label}</dt>
-      <dd>{children}</dd>
+      <dd className="tabular">{children}</dd>
     </div>
   );
 }
