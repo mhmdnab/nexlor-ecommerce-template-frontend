@@ -1,7 +1,7 @@
 'use client';
 
 import type { CategoryNode } from '@repo/types';
-import { Badge, Button, Card, Dialog, EmptyState, Field, Input, Select, Skeleton, useToast } from '@repo/ui';
+import { Badge, Button, Card, Dialog, EmptyState, ErrorState, Field, GradientText, Input, Select, Skeleton, useToast } from '@repo/ui';
 import { FolderTree, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import {
@@ -18,7 +18,7 @@ interface EditState {
 }
 
 export default function CategoriesPage() {
-  const { data: tree, isLoading } = useAdminCategories();
+  const { data: tree, isLoading, isError, refetch } = useAdminCategories();
   const del = useDeleteCategory();
   const { toast } = useToast();
   const [editing, setEditing] = useState<EditState | null>(null);
@@ -26,24 +26,47 @@ export default function CategoriesPage() {
   const flat = tree ? flatten(tree) : [];
 
   return (
-    <div className="space-y-5">
-      <div className="flex justify-end">
-        <Button onClick={() => setEditing({ name: '', slug: '', parentId: '' })}>
+    <div className="space-y-6">
+      {/* Page header */}
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight">
+            <GradientText>Categories</GradientText>
+          </h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">Organize your catalog with a hierarchy of categories.</p>
+        </div>
+        <Button variant="gradient" onClick={() => setEditing({ name: '', slug: '', parentId: '' })}>
           <Plus className="h-4 w-4" aria-hidden /> New category
         </Button>
       </div>
 
+      {/* List */}
       <Card className="overflow-hidden">
         {isLoading ? (
           <div className="space-y-2 p-4">
             {[0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-10 w-full" />)}
           </div>
+        ) : isError ? (
+          <ErrorState onRetry={() => refetch()} className="rounded-none border-0" />
         ) : flat.length === 0 ? (
-          <EmptyState icon={<FolderTree className="h-6 w-6" />} title="No categories" description="Organize your catalog with categories." />
+          <EmptyState
+            icon={<FolderTree className="h-6 w-6" />}
+            title="No categories"
+            description="Organize your catalog with categories."
+            action={
+              <Button size="sm" onClick={() => setEditing({ name: '', slug: '', parentId: '' })}>
+                <Plus className="h-4 w-4" aria-hidden /> New category
+              </Button>
+            }
+          />
         ) : (
-          <ul className="divide-y divide-border">
+          <ul className="divide-y divide-border" role="list">
             {flat.map(({ node, depth }) => (
-              <li key={node.id} className="flex items-center gap-3 px-4 py-3" style={{ paddingLeft: 16 + depth * 24 }}>
+              <li
+                key={node.id}
+                className="flex min-h-[44px] items-center gap-3 py-2 pr-4"
+                style={{ paddingLeft: 16 + depth * 24 }}
+              >
                 <FolderTree className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
                 <span className="font-medium">{node.name}</span>
                 <Badge tone="neutral">{node.productCount}</Badge>
@@ -51,7 +74,7 @@ export default function CategoriesPage() {
                   <button
                     aria-label={`Edit ${node.name}`}
                     onClick={() => setEditing({ id: node.id, name: node.name, slug: node.slug, parentId: node.parentId ?? '' })}
-                    className="grid h-8 w-8 place-items-center rounded-md hover:bg-surface-sunken"
+                    className="grid h-11 w-11 place-items-center rounded-md hover:bg-surface-sunken focus-visible:outline-2 focus-visible:outline-ring"
                   >
                     <Pencil className="h-4 w-4" aria-hidden />
                   </button>
@@ -61,7 +84,7 @@ export default function CategoriesPage() {
                       await del.mutateAsync(node.id);
                       toast({ title: 'Category deleted', tone: 'success' });
                     }}
-                    className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground hover:bg-surface-sunken hover:text-danger"
+                    className="grid h-11 w-11 place-items-center rounded-md text-muted-foreground hover:bg-surface-sunken hover:text-danger focus-visible:outline-2 focus-visible:outline-ring"
                   >
                     <Trash2 className="h-4 w-4" aria-hidden />
                   </button>

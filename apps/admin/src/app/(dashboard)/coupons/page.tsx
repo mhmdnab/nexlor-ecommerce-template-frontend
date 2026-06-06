@@ -4,9 +4,12 @@ import { CouponType } from '@repo/types';
 import {
   Badge,
   Button,
+  Card,
   DataTable,
   Dialog,
+  ErrorState,
   Field,
+  GradientText,
   Input,
   Select,
   Switch,
@@ -24,7 +27,7 @@ import {
 } from '@/lib/queries';
 
 export default function CouponsPage() {
-  const { data, isLoading } = useAdminCoupons({ limit: 50 });
+  const { data, isLoading, isError, refetch } = useAdminCoupons({ limit: 50 });
   const del = useDeleteCoupon();
   const { toast } = useToast();
   const [editing, setEditing] = useState<Coupon | null | undefined>(undefined); // undefined=closed, null=new
@@ -34,7 +37,7 @@ export default function CouponsPage() {
     {
       key: 'value',
       header: 'Discount',
-      cell: (c) => (c.type === CouponType.PERCENT ? `${c.value}%` : formatMoney(c.value)),
+      cell: (c) => <span className="tabular">{c.type === CouponType.PERCENT ? `${c.value}%` : formatMoney(c.value)}</span>,
     },
     { key: 'active', header: 'Status', cell: (c) => <Badge tone={c.active ? 'success' : 'neutral'}>{c.active ? 'Active' : 'Inactive'}</Badge> },
     {
@@ -49,7 +52,11 @@ export default function CouponsPage() {
       align: 'right',
       cell: (c) => (
         <span className="flex justify-end gap-1" onClick={(e) => e.stopPropagation()}>
-          <button aria-label="Edit" onClick={() => setEditing(c)} className="grid h-8 w-8 place-items-center rounded-md hover:bg-surface-sunken">
+          <button
+            aria-label="Edit"
+            onClick={() => setEditing(c)}
+            className="grid h-11 w-11 place-items-center rounded-md hover:bg-surface-sunken focus-visible:outline-2 focus-visible:outline-ring"
+          >
             <Pencil className="h-4 w-4" aria-hidden />
           </button>
           <button
@@ -58,7 +65,7 @@ export default function CouponsPage() {
               await del.mutateAsync(c.id);
               toast({ title: 'Coupon deleted', tone: 'success' });
             }}
-            className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground hover:bg-surface-sunken hover:text-danger"
+            className="grid h-11 w-11 place-items-center rounded-md text-muted-foreground hover:bg-surface-sunken hover:text-danger focus-visible:outline-2 focus-visible:outline-ring"
           >
             <Trash2 className="h-4 w-4" aria-hidden />
           </button>
@@ -68,20 +75,32 @@ export default function CouponsPage() {
   ];
 
   return (
-    <div className="space-y-5">
-      <div className="flex justify-end">
-        <Button onClick={() => setEditing(null)}>
+    <div className="space-y-6">
+      {/* Page header */}
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight">
+            <GradientText>Coupons</GradientText>
+          </h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">Create and manage discount codes for your store.</p>
+        </div>
+        <Button variant="gradient" onClick={() => setEditing(null)}>
           <Plus className="h-4 w-4" aria-hidden /> New coupon
         </Button>
       </div>
 
-      <DataTable
-        columns={columns}
-        data={data?.data ?? []}
-        loading={isLoading}
-        rowKey={(c) => c.id}
-        empty={{ title: 'No coupons', description: 'Create a discount code to get started.', icon: <Ticket className="h-6 w-6" /> }}
-      />
+      {/* Table or error */}
+      {isError ? (
+        <ErrorState onRetry={() => refetch()} />
+      ) : (
+        <DataTable
+          columns={columns}
+          data={data?.data ?? []}
+          loading={isLoading}
+          rowKey={(c) => c.id}
+          empty={{ title: 'No coupons', description: 'Create a discount code to get started.', icon: <Ticket className="h-6 w-6" /> }}
+        />
+      )}
 
       {editing !== undefined && (
         <CouponDialog coupon={editing} onClose={() => setEditing(undefined)} />

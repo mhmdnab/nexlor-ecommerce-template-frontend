@@ -3,8 +3,11 @@
 import { ProductStatus } from '@repo/types';
 import {
   Button,
+  Card,
   Checkbox,
   DataTable,
+  ErrorState,
+  GradientText,
   Input,
   Pagination,
   Price,
@@ -106,15 +109,29 @@ export default function ProductsPage() {
         header: 'Price',
         sortable: true,
         align: 'right',
-        cell: (row) => <Price cents={row.price} className="font-medium" />,
+        cell: (row) => <Price cents={row.price} className="tabular font-medium" />,
       },
     ],
     [selected],
   );
 
   return (
-    <div className="space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="space-y-6">
+      {/* Page header */}
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight">
+            <GradientText>Products</GradientText>
+          </h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">Manage your catalog, variants, and stock.</p>
+        </div>
+        <Link href="/products/new" className={buttonVariants({ variant: 'gradient' })}>
+          <Plus className="h-4 w-4" aria-hidden /> New product
+        </Link>
+      </div>
+
+      {/* Toolbar */}
+      <Card className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
         <div className="relative w-full max-w-xs">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
           <Input
@@ -128,30 +145,25 @@ export default function ProductsPage() {
             aria-label="Search products"
           />
         </div>
-        <Link href="/products/new" className={buttonVariants()}>
-          <Plus className="h-4 w-4" aria-hidden /> New product
-        </Link>
-      </div>
-
-      <div className="flex items-center justify-between gap-3">
-        <Tabs items={STATUS_TABS} value={status} onValueChange={(v) => { setStatus(v); setPage(1); }} />
-        {selected.size > 0 && (
-          <div className="flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-1.5 text-sm shadow-sm">
-            <span className="text-muted-foreground">{selected.size} selected</span>
-            <Button size="sm" variant="secondary" loading={bulkStatus.isPending} onClick={() => applyBulk(ProductStatus.ACTIVE)}>
-              Activate
-            </Button>
-            <Button size="sm" variant="ghost" onClick={() => applyBulk(ProductStatus.ARCHIVED)}>
-              Archive
-            </Button>
-          </div>
-        )}
-      </div>
-
-      {isError ? (
-        <div className="rounded-lg border border-border p-8">
-          <Button variant="secondary" onClick={() => refetch()}>Retry</Button>
+        <div className="flex items-center gap-3">
+          <Tabs items={STATUS_TABS} value={status} onValueChange={(v) => { setStatus(v); setPage(1); }} />
+          {selected.size > 0 && (
+            <div className="flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-1.5 text-sm shadow-sm">
+              <span className="tabular text-muted-foreground">{selected.size} selected</span>
+              <Button size="sm" variant="secondary" loading={bulkStatus.isPending} onClick={() => applyBulk(ProductStatus.ACTIVE)}>
+                Activate
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => applyBulk(ProductStatus.ARCHIVED)}>
+                Archive
+              </Button>
+            </div>
+          )}
         </div>
+      </Card>
+
+      {/* Table or error */}
+      {isError ? (
+        <ErrorState onRetry={() => refetch()} />
       ) : (
         <DataTable
           columns={columns}
@@ -174,18 +186,20 @@ export default function ProductsPage() {
         />
       )}
 
-      {data && (
-        <Pagination
-          page={data.meta.page}
-          totalPages={data.meta.totalPages}
-          total={data.meta.total}
-          onPageChange={setPage}
-        />
-      )}
-
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Checkbox checked={allSelected} onCheckedChange={toggleAll} aria-label="Select all" />
-        <span className={cn(rows.length === 0 && 'opacity-50')}>Select all on this page</span>
+      {/* Pagination + select all */}
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Checkbox checked={allSelected} onCheckedChange={toggleAll} aria-label="Select all" />
+          <span className={cn(rows.length === 0 && 'opacity-50')}>Select all on this page</span>
+        </div>
+        {data && (
+          <Pagination
+            page={data.meta.page}
+            totalPages={data.meta.totalPages}
+            total={data.meta.total}
+            onPageChange={setPage}
+          />
+        )}
       </div>
     </div>
   );
