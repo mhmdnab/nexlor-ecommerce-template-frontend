@@ -80,6 +80,15 @@ export interface CategoryNode {
   children: CategoryNode[];
 }
 
+export interface VariantPreset {
+  id: string;
+  name: string;
+  options: string[];
+  position: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface CartLine {
   id: string;
   variantId: string;
