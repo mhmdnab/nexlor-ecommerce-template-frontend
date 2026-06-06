@@ -69,7 +69,7 @@ export default function CategoriesPage() {
               >
                 <FolderTree className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
                 <span className="font-medium">{node.name}</span>
-                <Badge tone="neutral">{node.productCount}</Badge>
+                <Badge tone="neutral" className="tabular">{node.productCount}</Badge>
                 <span className="ml-auto flex gap-1">
                   <button
                     aria-label={`Edit ${node.name}`}

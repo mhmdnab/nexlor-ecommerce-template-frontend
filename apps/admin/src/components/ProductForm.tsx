@@ -4,6 +4,10 @@ import { ProductStatus, type ProductDetail } from '@repo/types';
 import {
   Button,
   Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
   Checkbox,
   Field,
   Input,
@@ -14,7 +18,18 @@ import {
   cn,
   useToast,
 } from '@repo/ui';
-import { GripVertical, ImagePlus, Plus, Star, Trash2, X } from 'lucide-react';
+import {
+  FolderOpen,
+  GripVertical,
+  ImagePlus,
+  Layers,
+  Package,
+  Plus,
+  Star,
+  Tag,
+  Trash2,
+  X,
+} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -50,7 +65,9 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
   const [description, setDescription] = useState(product?.description ?? '');
   const [basePrice, setBasePrice] = useState(product ? centsToDollars(product.basePrice) : '');
   const [status, setStatus] = useState<ProductStatus>(product?.status ?? ProductStatus.DRAFT);
-  const [categoryIds, setCategoryIds] = useState<string[]>(product?.categories.map((c) => c.id) ?? []);
+  const [categoryIds, setCategoryIds] = useState<string[]>(
+    product?.categories.map((c) => c.id) ?? [],
+  );
   const [variants, setVariants] = useState<VariantDraft[]>(
     product?.variants.map((v) => ({
       id: v.id,
@@ -116,14 +133,21 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
     if (!files?.length) return;
     for (const file of Array.from(files)) {
       try {
-        const { uploadUrl, publicUrl } = await presign.mutateAsync({ filename: file.name, contentType: file.type });
-        await fetch(uploadUrl, { method: 'PUT', body: file, headers: { 'Content-Type': file.type } });
+        const { uploadUrl, publicUrl } = await presign.mutateAsync({
+          filename: file.name,
+          contentType: file.type,
+        });
+        await fetch(uploadUrl, {
+          method: 'PUT',
+          body: file,
+          headers: { 'Content-Type': file.type },
+        });
         setImages((prev) => [...prev, { url: publicUrl, alt: name }]);
         touch();
       } catch {
         toast({
           title: 'Upload unavailable',
-          description: 'R2 storage isn’t configured. Add an image URL below instead.',
+          description: "R2 storage isn’t configured. Add an image URL below instead.",
           tone: 'error',
         });
       }
@@ -142,167 +166,379 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
 
   return (
     <div className="pb-24">
+      {/* Breadcrumb */}
       <div className="mb-5 flex items-center gap-2 text-sm">
-        <Link href="/products" className="text-muted-foreground hover:text-foreground">Products</Link>
+        <Link href="/products" className="text-muted-foreground hover:text-foreground">
+          Products
+        </Link>
         <span className="text-subtle-foreground">/</span>
         <span className="font-medium">{product ? product.name : 'New product'}</span>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+        {/* ── Main column ── */}
         <div className="space-y-6">
+
           {/* Details */}
-          <Card className="space-y-4 p-5">
-            <h2 className="text-base font-semibold">Details</h2>
-            <Field label="Name" required error={errors.name}>
-              {({ id, invalid }) => (
-                <Input id={id} value={name} invalid={invalid} onChange={(e) => { setName(e.target.value); touch(); }} />
-              )}
-            </Field>
-            <Field label="Slug" helper="Leave blank to auto-generate from the name.">
-              {({ id }) => <Input id={id} value={slug} onChange={(e) => { setSlug(e.target.value); touch(); }} placeholder="auto" />}
-            </Field>
-            <Field label="Description">
-              {({ id }) => <Textarea id={id} value={description} onChange={(e) => { setDescription(e.target.value); touch(); }} rows={5} />}
-            </Field>
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <Package className="h-4 w-4 text-muted-foreground" aria-hidden />
+                <CardTitle>Details</CardTitle>
+              </div>
+              <CardDescription>Product name, URL slug, and description.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Field label="Name" required error={errors.name}>
+                {({ id, invalid, describedBy }) => (
+                  <Input
+                    id={id}
+                    value={name}
+                    invalid={invalid}
+                    aria-describedby={describedBy}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                      touch();
+                    }}
+                  />
+                )}
+              </Field>
+              <Field
+                label="Slug"
+                helper="Leave blank to auto-generate from the name."
+              >
+                {({ id, describedBy }) => (
+                  <Input
+                    id={id}
+                    value={slug}
+                    placeholder="auto"
+                    aria-describedby={describedBy}
+                    onChange={(e) => {
+                      setSlug(e.target.value);
+                      touch();
+                    }}
+                  />
+                )}
+              </Field>
+              <Field label="Description">
+                {({ id }) => (
+                  <Textarea
+                    id={id}
+                    value={description}
+                    rows={5}
+                    onChange={(e) => {
+                      setDescription(e.target.value);
+                      touch();
+                    }}
+                  />
+                )}
+              </Field>
+            </CardContent>
           </Card>
 
           {/* Variants */}
-          <Card className="space-y-4 p-5">
-            <div className="flex items-center justify-between">
-              <h2 className="text-base font-semibold">Variants</h2>
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => { setVariants((v) => [...v, { name: '', sku: '', price: '', stock: '0' }]); touch(); }}
-              >
-                <Plus className="h-4 w-4" aria-hidden /> Add variant
-              </Button>
-            </div>
-            <div className="space-y-3">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Layers className="h-4 w-4 text-muted-foreground" aria-hidden />
+                  <CardTitle>Variants</CardTitle>
+                </div>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => {
+                    setVariants((v) => [...v, { name: '', sku: '', price: '', stock: '0' }]);
+                    touch();
+                  }}
+                >
+                  <Plus className="h-4 w-4" aria-hidden /> Add variant
+                </Button>
+              </div>
+              <CardDescription>
+                Each variant has its own SKU and stock level. Leave price blank to inherit the
+                base price.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
               {variants.map((v, i) => (
-                <div key={i} className="grid grid-cols-[1fr_1fr_90px_70px_auto] items-end gap-2">
-                  <Field label={i === 0 ? 'Name' : ''}>
-                    {({ id }) => <Input id={id} value={v.name} placeholder="Size / color" onChange={(e) => { setVariants((p) => p.map((x, j) => (j === i ? { ...x, name: e.target.value } : x))); touch(); }} />}
+                <div
+                  key={i}
+                  className={cn(
+                    'grid grid-cols-[1fr_1fr_90px_70px_auto] items-end gap-2',
+                    errors[`variant-${i}`] && 'rounded-md border border-danger/40 p-2',
+                  )}
+                >
+                  <Field label={i === 0 ? 'Name' : ''} error={i === 0 ? undefined : errors[`variant-${i}`]}>
+                    {({ id }) => (
+                      <Input
+                        id={id}
+                        value={v.name}
+                        placeholder="Size / color"
+                        onChange={(e) => {
+                          setVariants((p) =>
+                            p.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)),
+                          );
+                          touch();
+                        }}
+                      />
+                    )}
                   </Field>
                   <Field label={i === 0 ? 'SKU' : ''}>
-                    {({ id }) => <Input id={id} value={v.sku} placeholder="SKU-001" onChange={(e) => { setVariants((p) => p.map((x, j) => (j === i ? { ...x, sku: e.target.value } : x))); touch(); }} />}
+                    {({ id }) => (
+                      <Input
+                        id={id}
+                        value={v.sku}
+                        placeholder="SKU-001"
+                        className="tabular"
+                        onChange={(e) => {
+                          setVariants((p) =>
+                            p.map((x, j) => (j === i ? { ...x, sku: e.target.value } : x)),
+                          );
+                          touch();
+                        }}
+                      />
+                    )}
                   </Field>
                   <Field label={i === 0 ? 'Price' : ''}>
-                    {({ id }) => <Input id={id} value={v.price} placeholder="base" inputMode="decimal" onChange={(e) => { setVariants((p) => p.map((x, j) => (j === i ? { ...x, price: e.target.value } : x))); touch(); }} />}
+                    {({ id }) => (
+                      <Input
+                        id={id}
+                        value={v.price}
+                        placeholder="base"
+                        inputMode="decimal"
+                        className="tabular"
+                        onChange={(e) => {
+                          setVariants((p) =>
+                            p.map((x, j) => (j === i ? { ...x, price: e.target.value } : x)),
+                          );
+                          touch();
+                        }}
+                      />
+                    )}
                   </Field>
                   <Field label={i === 0 ? 'Stock' : ''}>
-                    {({ id }) => <Input id={id} value={v.stock} inputMode="numeric" onChange={(e) => { setVariants((p) => p.map((x, j) => (j === i ? { ...x, stock: e.target.value } : x))); touch(); }} />}
+                    {({ id }) => (
+                      <Input
+                        id={id}
+                        value={v.stock}
+                        inputMode="numeric"
+                        className="tabular"
+                        onChange={(e) => {
+                          setVariants((p) =>
+                            p.map((x, j) => (j === i ? { ...x, stock: e.target.value } : x)),
+                          );
+                          touch();
+                        }}
+                      />
+                    )}
                   </Field>
                   <button
                     type="button"
                     aria-label="Remove variant"
-                    onClick={() => { setVariants((p) => p.filter((_, j) => j !== i)); touch(); }}
-                    className="mb-1 grid h-10 w-10 place-items-center rounded-md text-muted-foreground hover:bg-surface-sunken hover:text-danger"
+                    onClick={() => {
+                      setVariants((p) => p.filter((_, j) => j !== i));
+                      touch();
+                    }}
+                    className="mb-1 grid h-11 w-11 place-items-center rounded-md text-muted-foreground hover:bg-surface-sunken hover:text-danger focus-visible:outline-2 focus-visible:outline-ring"
                   >
                     <Trash2 className="h-4 w-4" aria-hidden />
                   </button>
                 </div>
               ))}
-              {errors.variants && <p className="text-sm text-danger">{errors.variants}</p>}
-            </div>
+              {errors.variants && (
+                <p role="alert" className="text-sm text-danger">
+                  {errors.variants}
+                </p>
+              )}
+            </CardContent>
           </Card>
 
-          {/* Images */}
-          <Card className="space-y-4 p-5">
-            <div className="flex items-center justify-between">
-              <h2 className="text-base font-semibold">Images</h2>
-              <div className="flex gap-2">
-                <input ref={fileInput} type="file" accept="image/*" multiple hidden onChange={(e) => onFiles(e.target.files)} />
-                <Button size="sm" variant="secondary" loading={presign.isPending} onClick={() => fileInput.current?.click()}>
-                  <ImagePlus className="h-4 w-4" aria-hidden /> Upload
-                </Button>
-              </div>
-            </div>
-            {images.length === 0 ? (
-              <p className="rounded-md border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-                No images yet. Upload (requires R2) or add a URL below.
-              </p>
-            ) : (
-              <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4">
-                {images.map((img, i) => (
-                  <li
-                    key={img.id ?? img.url}
-                    draggable
-                    onDragStart={() => setDragIndex(i)}
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={() => { if (dragIndex !== null && dragIndex !== i) reorder(dragIndex, i); setDragIndex(null); }}
-                    className="group relative aspect-square overflow-hidden rounded-md border border-border bg-surface-sunken"
+          {/* Images / Media */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <ImagePlus className="h-4 w-4 text-muted-foreground" aria-hidden />
+                  <CardTitle>Media</CardTitle>
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    ref={fileInput}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    hidden
+                    onChange={(e) => onFiles(e.target.files)}
+                  />
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    loading={presign.isPending}
+                    onClick={() => fileInput.current?.click()}
                   >
-                    <Image src={img.url} alt={img.alt} fill sizes="120px" className="object-cover" />
-                    {i === 0 && (
-                      <span className="absolute left-1 top-1 inline-flex items-center gap-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white">
-                        <Star className="h-3 w-3" aria-hidden /> Primary
-                      </span>
-                    )}
-                    <span className="absolute right-1 top-1 grid h-6 w-6 cursor-grab place-items-center rounded bg-black/60 text-white opacity-0 group-hover:opacity-100">
-                      <GripVertical className="h-3.5 w-3.5" aria-hidden />
-                    </span>
-                    <button
-                      type="button"
-                      aria-label="Remove image"
-                      onClick={() => { setImages((p) => p.filter((_, j) => j !== i)); touch(); }}
-                      className="absolute bottom-1 right-1 grid h-6 w-6 place-items-center rounded bg-danger text-danger-foreground opacity-0 group-hover:opacity-100"
+                    <ImagePlus className="h-4 w-4" aria-hidden /> Upload
+                  </Button>
+                </div>
+              </div>
+              <CardDescription>
+                Drag to reorder. The first image is used as the primary product image.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {images.length === 0 ? (
+                <p className="rounded-md border border-dashed border-border py-8 text-center text-sm text-muted-foreground">
+                  No images yet. Upload (requires R2) or add a URL below.
+                </p>
+              ) : (
+                <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+                  {images.map((img, i) => (
+                    <li
+                      key={img.id ?? img.url}
+                      draggable
+                      onDragStart={() => setDragIndex(i)}
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={() => {
+                        if (dragIndex !== null && dragIndex !== i) reorder(dragIndex, i);
+                        setDragIndex(null);
+                      }}
+                      className="group relative aspect-square overflow-hidden rounded-md border border-border bg-surface-sunken"
                     >
-                      <X className="h-3.5 w-3.5" aria-hidden />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <AddImageByUrl onAdd={(url) => { setImages((p) => [...p, { url, alt: name }]); touch(); }} />
+                      <Image
+                        src={img.url}
+                        alt={img.alt}
+                        fill
+                        sizes="120px"
+                        className="object-cover"
+                      />
+                      {i === 0 && (
+                        <span className="absolute left-1 top-1 inline-flex items-center gap-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white">
+                          <Star className="h-3 w-3" aria-hidden /> Primary
+                        </span>
+                      )}
+                      <span className="absolute right-1 top-1 grid h-6 w-6 cursor-grab place-items-center rounded bg-black/60 text-white opacity-0 group-hover:opacity-100">
+                        <GripVertical className="h-3.5 w-3.5" aria-hidden />
+                      </span>
+                      <button
+                        type="button"
+                        aria-label="Remove image"
+                        onClick={() => {
+                          setImages((p) => p.filter((_, j) => j !== i));
+                          touch();
+                        }}
+                        className="absolute bottom-1 right-1 grid h-6 w-6 place-items-center rounded bg-danger text-danger-foreground opacity-0 group-hover:opacity-100"
+                      >
+                        <X className="h-3.5 w-3.5" aria-hidden />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <AddImageByUrl
+                onAdd={(url) => {
+                  setImages((p) => [...p, { url, alt: name }]);
+                  touch();
+                }}
+              />
+            </CardContent>
           </Card>
         </div>
 
-        {/* Sidebar */}
+        {/* ── Sidebar column ── */}
         <div className="space-y-6">
-          <Card className="space-y-4 p-5">
-            <h2 className="text-base font-semibold">Status &amp; price</h2>
-            <Field label="Status">
-              {({ id }) => (
-                <Select id={id} value={status} onChange={(e) => { setStatus(e.target.value as ProductStatus); touch(); }}>
-                  <option value={ProductStatus.DRAFT}>Draft</option>
-                  <option value={ProductStatus.ACTIVE}>Active</option>
-                  <option value={ProductStatus.ARCHIVED}>Archived</option>
-                </Select>
-              )}
-            </Field>
-            <Field label="Base price (USD)" required error={errors.basePrice}>
-              {({ id, invalid }) => (
-                <Input id={id} value={basePrice} invalid={invalid} inputMode="decimal" placeholder="0.00" onChange={(e) => { setBasePrice(e.target.value); touch(); }} />
-              )}
-            </Field>
-          </Card>
 
-          <Card className="space-y-3 p-5">
-            <h2 className="text-base font-semibold">Categories</h2>
-            <div className="space-y-2">
-              {(categories ?? []).map((cat) => (
-                <label key={cat.id} className="flex items-center gap-2.5 text-sm">
-                  <Checkbox
-                    checked={categoryIds.includes(cat.id)}
-                    onCheckedChange={(on) => {
-                      setCategoryIds((prev) => (on ? [...prev, cat.id] : prev.filter((x) => x !== cat.id)));
+          {/* Status & Price */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <Tag className="h-4 w-4 text-muted-foreground" aria-hidden />
+                <CardTitle>Status &amp; pricing</CardTitle>
+              </div>
+              <CardDescription>
+                Publish status and base price. Totals are server-computed.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Field label="Status">
+                {({ id }) => (
+                  <Select
+                    id={id}
+                    value={status}
+                    onChange={(e) => {
+                      setStatus(e.target.value as ProductStatus);
                       touch();
                     }}
-                    aria-label={cat.name}
+                  >
+                    <option value={ProductStatus.DRAFT}>Draft</option>
+                    <option value={ProductStatus.ACTIVE}>Active</option>
+                    <option value={ProductStatus.ARCHIVED}>Archived</option>
+                  </Select>
+                )}
+              </Field>
+              <Field
+                label="Base price (USD)"
+                required
+                helper="Override per-variant with the price column above."
+                error={errors.basePrice}
+              >
+                {({ id, invalid, describedBy }) => (
+                  <Input
+                    id={id}
+                    value={basePrice}
+                    invalid={invalid}
+                    inputMode="decimal"
+                    placeholder="0.00"
+                    className="tabular"
+                    aria-describedby={describedBy}
+                    onChange={(e) => {
+                      setBasePrice(e.target.value);
+                      touch();
+                    }}
                   />
-                  {cat.name}
-                </label>
-              ))}
-              {(!categories || categories.length === 0) && (
-                <p className="text-sm text-muted-foreground">No categories yet.</p>
-              )}
-            </div>
+                )}
+              </Field>
+            </CardContent>
+          </Card>
+
+          {/* Categories */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <FolderOpen className="h-4 w-4 text-muted-foreground" aria-hidden />
+                <CardTitle>Categories</CardTitle>
+              </div>
+              <CardDescription>Assign this product to one or more categories.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {(categories ?? []).map((cat) => (
+                  <label
+                    key={cat.id}
+                    className="flex min-h-[44px] items-center gap-2.5 rounded-md px-2 text-sm hover:bg-surface-sunken"
+                  >
+                    <Checkbox
+                      checked={categoryIds.includes(cat.id)}
+                      onCheckedChange={(on) => {
+                        setCategoryIds((prev) =>
+                          on ? [...prev, cat.id] : prev.filter((x) => x !== cat.id),
+                        );
+                        touch();
+                      }}
+                      aria-label={cat.name}
+                    />
+                    {cat.name}
+                  </label>
+                ))}
+                {(!categories || categories.length === 0) && (
+                  <p className="text-sm text-muted-foreground">No categories yet.</p>
+                )}
+              </div>
+            </CardContent>
           </Card>
         </div>
       </div>
 
-      {/* Sticky save bar */}
+      {/* ── Sticky save bar (appears when dirty) ── */}
       <div
         className={cn(
           'fixed inset-x-0 bottom-0 z-sticky border-t border-border bg-surface/95 backdrop-blur transition-transform duration-base',
@@ -325,7 +561,9 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
       {/* Always-available create button when not dirty (new product) */}
       {!dirty && !product && (
         <div className="mt-6">
-          <Button loading={save.isPending} onClick={onSubmit}>Create product</Button>
+          <Button loading={save.isPending} onClick={onSubmit}>
+            Create product
+          </Button>
         </div>
       )}
     </div>
@@ -337,8 +575,15 @@ function AddImageByUrl({ onAdd }: { onAdd: (url: string) => void }) {
   return (
     <div className="flex items-end gap-2">
       <div className="flex-1">
-        <Label htmlFor="img-url" className="mb-1.5 block">Add image by URL</Label>
-        <Input id="img-url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://…" />
+        <Label htmlFor="img-url" className="mb-1.5 block text-sm font-medium">
+          Add image by URL
+        </Label>
+        <Input
+          id="img-url"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder="https://…"
+        />
       </div>
       <Button
         variant="secondary"
