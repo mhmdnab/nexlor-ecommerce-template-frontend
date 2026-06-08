@@ -1,6 +1,6 @@
 import { themeScript } from '@repo/ui';
 import type { Metadata } from 'next';
-import { Fraunces, Inter } from 'next/font/google';
+import { Hanken_Grotesk, Playfair_Display } from 'next/font/google';
 import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
 import { CartSheet } from '@/components/cart/CartSheet';
@@ -8,12 +8,12 @@ import { env } from '@/lib/env';
 import { Providers } from './providers';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
-const fraunces = Fraunces({
+const sans = Hanken_Grotesk({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
+const serif = Playfair_Display({
   subsets: ['latin'],
   variable: '--font-serif',
   display: 'swap',
-  axes: ['opsz'],
+  weight: ['500', '600', '700'],
 });
 
 export const metadata: Metadata = {
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${fraunces.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${sans.variable} ${serif.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>

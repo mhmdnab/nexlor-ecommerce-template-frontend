@@ -14,45 +14,50 @@
   color-scheme: light;
 
   /* ---- surfaces ---- */
-  --background: 40 33% 98%;
-  --surface: 0 0% 100%;
-  --surface-raised: 40 25% 99%;
-  --surface-sunken: 40 20% 95%;
+  --background: 40 38% 97%;
+  --surface: 40 40% 99%;
+  --surface-raised: 40 30% 99%;
+  --surface-sunken: 40 24% 94%;
 
   /* ---- lines ---- */
-  --border: 40 13% 87%;
-  --border-strong: 38 11% 74%;
-  --divider: 40 14% 91%;
+  --border: 38 20% 86%;
+  --border-strong: 36 16% 72%;
+  --divider: 40 22% 90%;
 
   /* ---- text ---- */
-  --foreground: 28 12% 13%;
-  --muted-foreground: 30 7% 36%;
-  --subtle-foreground: 30 6% 52%;
+  --foreground: 30 22% 12%;
+  --muted-foreground: 30 10% 34%;
+  --subtle-foreground: 32 8% 50%;
 
-  /* ---- brand ---- */
-  --primary: 243 75% 59%;
-  --primary-foreground: 0 0% 100%;
-  --primary-hover: 243 68% 53%;
-  --primary-active: 243 68% 46%;
+  /* ---- brand (deep emerald) ---- */
+  --primary: 159 56% 27%;
+  --primary-foreground: 40 40% 98%;
+  --primary-hover: 159 58% 23%;
+  --primary-active: 159 60% 19%;
 
-  --accent: 243 60% 96%;
-  --accent-foreground: 243 72% 45%;
+  --accent: 158 40% 94%;
+  --accent-foreground: 159 56% 27%;
+
+  /* ---- gold accent (signature; hairlines, sale tags, dividers) ---- */
+  --gold: 41 54% 50%;
+  --gold-foreground: 30 22% 12%;
+  --gold-subtle: 41 60% 92%;
 
   /* ---- brand gradient: start follows --primary automatically; set --gradient-to for a custom 2nd stop ---- */
   --gradient-from: var(--primary);
-  --gradient-to: 270 70% 60%;     /* violet — secondary brand stop */
+  --gradient-to: 38 58% 40%;
   --gradient-brand: linear-gradient(135deg, hsl(var(--gradient-from)), hsl(var(--gradient-to)));
   --gradient-brand-soft: linear-gradient(135deg, hsl(var(--gradient-from) / 0.12), hsl(var(--gradient-to) / 0.12));
 
   /* ---- inverse "drama" surface (dark bands inside the light canvas) ---- */
-  --surface-inverse: 250 24% 9%;
-  --surface-inverse-foreground: 40 22% 95%;
-  --surface-inverse-muted: 250 10% 65%;
-  --surface-inverse-border: 250 14% 22%;
+  --surface-inverse: 162 30% 9%;
+  --surface-inverse-foreground: 40 30% 95%;
+  --surface-inverse-muted: 150 8% 66%;
+  --surface-inverse-border: 160 16% 22%;
 
   /* ---- glass (OVERLAY ONLY: header, sheet, dialog) ---- */
-  --glass-tint: 40 33% 98%;       /* mirrors --background */
-  --glass-border: 40 13% 87%;
+  --glass-tint: 40 38% 97%;
+  --glass-border: 38 20% 86%;
   --glass-blur: 12px;
 
   /* ---- semantic (each: base / -foreground / -subtle) ---- */
@@ -73,7 +78,7 @@
   --info-subtle: 213 90% 95%;
 
   /* ---- focus ---- */
-  --ring: 243 75% 59%;
+  --ring: 159 56% 27%;
 
   /* ---- radius scale ---- */
   --radius-sm: 6px;
@@ -101,8 +106,8 @@
   --stagger-step: 40ms;
 
   /* ---- typography (apps inject --font-sans / --font-serif via next/font) ---- */
-  --font-sans-fallback: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --font-serif-fallback: ui-serif, Georgia, 'Times New Roman', serif;
+  --font-sans-fallback: 'Hanken Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-serif-fallback: 'Playfair Display', ui-serif, Georgia, 'Times New Roman', serif;
 }
 
 .dark {
@@ -121,23 +126,27 @@
   --muted-foreground: 38 9% 68%;
   --subtle-foreground: 36 7% 50%;
 
-  --primary: 239 84% 70%;
-  --primary-foreground: 240 30% 10%;
-  --primary-hover: 239 84% 76%;
-  --primary-active: 239 84% 64%;
+  --primary: 158 52% 52%;
+  --primary-foreground: 160 40% 8%;
+  --primary-hover: 158 52% 58%;
+  --primary-active: 158 52% 46%;
 
-  --accent: 243 40% 20%;
-  --accent-foreground: 243 80% 84%;
+  --accent: 160 30% 18%;
+  --accent-foreground: 158 60% 74%;
+
+  --gold: 41 60% 60%;
+  --gold-foreground: 40 30% 8%;
+  --gold-subtle: 41 30% 18%;
 
   --gradient-from: var(--primary);
-  --gradient-to: 270 80% 75%;
+  --gradient-to: 41 64% 64%;
   --gradient-brand: linear-gradient(135deg, hsl(var(--gradient-from)), hsl(var(--gradient-to)));
   --gradient-brand-soft: linear-gradient(135deg, hsl(var(--gradient-from) / 0.16), hsl(var(--gradient-to) / 0.16)); /* slightly stronger alpha on dark */
 
-  --surface-inverse: 250 18% 14%;
-  --surface-inverse-foreground: 40 22% 95%;
-  --surface-inverse-muted: 250 10% 68%;
-  --surface-inverse-border: 250 14% 30%;
+  --surface-inverse: 162 22% 12%;
+  --surface-inverse-foreground: 40 30% 95%;
+  --surface-inverse-muted: 150 8% 68%;
+  --surface-inverse-border: 160 14% 28%;
 
   --glass-tint: 30 9% 8%;         /* mirrors dark --background */
   --glass-border: 30 7% 22%;
@@ -159,7 +168,7 @@
   --info-foreground: 213 70% 10%;
   --info-subtle: 213 50% 18%;
 
-  --ring: 239 84% 70%;
+  --ring: 158 52% 52%;
 
   --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.30);
   --shadow-md: 0 2px 8px -2px hsl(0 0% 0% / 0.40), 0 1px 2px hsl(0 0% 0% / 0.30);

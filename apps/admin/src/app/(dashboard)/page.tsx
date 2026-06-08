@@ -143,7 +143,7 @@ function StatCard({ label, value, delta, accent = false }: { label: string; valu
   const positive = (delta ?? 0) >= 0;
   return (
     <Card className={cn('p-5', accent && 'relative overflow-hidden')}>
-      {accent && <span className="absolute inset-x-0 top-0 h-0.5 bg-gradient-brand" aria-hidden />}
+      {accent && <span className="absolute inset-x-0 top-0 h-0.5 bg-gold" aria-hidden />}
       <p className="text-sm text-muted-foreground">{label}</p>
       {accent ? (
         <GradientText className="tabular mt-2 block text-3xl font-semibold tracking-tight">{value}</GradientText>

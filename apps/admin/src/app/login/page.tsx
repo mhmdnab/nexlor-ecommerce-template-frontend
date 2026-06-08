@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, Role, type LoginInput } from '@repo/types';
-import { Button, Card, CardContent, CardHeader, Eyebrow, Field, GradientText, Input, useToast } from '@repo/ui';
+import { Button, Card, CardContent, CardHeader, Eyebrow, Field, Input, useToast } from '@repo/ui';
 import { Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -62,9 +62,11 @@ export default function LoginPage() {
             </span>
           </div>
           <Eyebrow className="mb-1">Admin Portal</Eyebrow>
-          <h1 className="text-2xl font-semibold tracking-tight">
+          <h1 className="font-serif text-2xl font-semibold tracking-tight">
             Sign in to{' '}
-            <GradientText>Nexlor</GradientText>
+            <span className="text-foreground">
+              Nexlor<span className="text-gold">.</span>
+            </span>
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Manage your store settings, orders, and catalog.

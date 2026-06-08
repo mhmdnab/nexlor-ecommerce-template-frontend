@@ -1,6 +1,6 @@
 'use client';
 
-import { GradientText, cn } from '@repo/ui';
+import { cn } from '@repo/ui';
 import {
   LayoutDashboard,
   Package,
@@ -60,7 +60,11 @@ export function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle:
       )}
     >
       <div className="flex h-16 items-center gap-2 px-4">
-        {!collapsed && <GradientText className="text-lg font-semibold tracking-tight">Nexlor</GradientText>}
+        {!collapsed && (
+          <span className="font-serif text-lg font-semibold tracking-tight text-foreground">
+            Nexlor<span className="text-gold">.</span>
+          </span>
+        )}
         <button
           onClick={onToggle}
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
@@ -92,14 +96,14 @@ export function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle:
                       className={cn(
                         'relative flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors',
                         active
-                          ? 'bg-gradient-brand-soft font-semibold text-foreground'
+                          ? 'bg-accent font-semibold text-accent-foreground'
                           : 'text-muted-foreground hover:bg-surface-sunken hover:text-foreground',
                         collapsed && 'justify-center',
                       )}
                     >
                       {/* Active indicator bar — not color-only. */}
-                      {active && <span className="absolute left-0 top-1.5 h-[calc(100%-12px)] w-0.5 rounded-full bg-gradient-brand" />}
-                      <item.icon className="h-5 w-5 shrink-0" aria-hidden />
+                      {active && <span className="absolute left-0 top-1.5 h-[calc(100%-12px)] w-0.5 rounded-full bg-primary" />}
+                      <item.icon className={cn('h-5 w-5 shrink-0', active && 'text-primary')} aria-hidden />
                       {!collapsed && item.label}
                     </Link>
                   </li>
