@@ -1,10 +1,16 @@
 import { themeScript } from '@repo/ui';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Hanken_Grotesk, Playfair_Display } from 'next/font/google';
 import { Providers } from './providers';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
+const sans = Hanken_Grotesk({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
+const serif = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-serif',
+  display: 'swap',
+  weight: ['500', '600', '700'],
+});
 
 export const metadata: Metadata = {
   title: { default: 'Nexlor Admin', template: '%s · Nexlor Admin' },
@@ -14,7 +20,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
+    <html lang="en" className={`${sans.variable} ${serif.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
