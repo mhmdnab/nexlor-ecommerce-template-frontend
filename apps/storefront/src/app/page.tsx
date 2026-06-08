@@ -17,6 +17,10 @@ import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ProductGrid } from '@/components/ProductGrid';
+import { ValuesTrio } from '@/components/home/ValuesTrio';
+import { Lookbook } from '@/components/home/Lookbook';
+import { Testimonials } from '@/components/home/Testimonials';
+import { NewsletterBand } from '@/components/home/NewsletterBand';
 import { useCategories, useProducts } from '@/lib/queries';
 
 const VALUE_PROPS = [
@@ -183,6 +187,8 @@ export default function HomePage() {
           </BentoGrid>
         </section>
 
+        <ValuesTrio />
+
         {/* ───────────────── 3) PRODUCT RAIL — New arrivals ───────────────── */}
         <section className="pb-16 sm:pb-20">
           <div className="mb-6 flex items-end justify-between gap-4">
@@ -207,6 +213,8 @@ export default function HomePage() {
             priorityCount={4}
           />
         </section>
+
+        <Lookbook />
       </div>
 
       {/* ───────────────── 4) EDITORIAL band ───────────────── */}
@@ -245,6 +253,11 @@ export default function HomePage() {
           </Reveal>
         </div>
       </Section>
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Testimonials />
+      </div>
+      <NewsletterBand />
 
       {/* ───────────────── 5) VALUE Marquee ───────────────── */}
       <div className="mt-16 border-y border-border py-5 sm:mt-20">
