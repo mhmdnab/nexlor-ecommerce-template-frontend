@@ -45,7 +45,7 @@
 
   /* ---- brand gradient: start follows --primary automatically; set --gradient-to for a custom 2nd stop ---- */
   --gradient-from: var(--primary);
-  --gradient-to: 41 54% 52%;
+  --gradient-to: 38 58% 40%;
   --gradient-brand: linear-gradient(135deg, hsl(var(--gradient-from)), hsl(var(--gradient-to)));
   --gradient-brand-soft: linear-gradient(135deg, hsl(var(--gradient-from) / 0.12), hsl(var(--gradient-to) / 0.12));
 
