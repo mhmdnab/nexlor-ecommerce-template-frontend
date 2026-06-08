@@ -31,6 +31,7 @@ const preset: Omit<Config, 'content'> = {
           active: c('primary-active'),
         },
         accent: { DEFAULT: c('accent'), foreground: c('accent-foreground') },
+        gold: { DEFAULT: c('gold'), foreground: c('gold-foreground'), subtle: c('gold-subtle') },
         'surface-inverse': {
           DEFAULT: c('surface-inverse'),
           foreground: c('surface-inverse-foreground'),
