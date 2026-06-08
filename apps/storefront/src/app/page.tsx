@@ -52,7 +52,7 @@ export default function HomePage() {
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute -bottom-40 -left-24 h-[28rem] w-[28rem] rounded-full bg-gradient-brand opacity-25 blur-3xl"
+            className="pointer-events-none absolute -bottom-40 -left-24 h-[28rem] w-[28rem] rounded-full bg-gold opacity-20 blur-3xl"
           />
 
           <div className="relative z-10 mx-auto flex min-h-[64vh] max-w-7xl flex-col justify-center px-6 py-20 sm:px-10 lg:min-h-[70vh] lg:py-28">
@@ -94,6 +94,12 @@ export default function HomePage() {
                 >
                   New arrivals
                 </Link>
+              </div>
+              <div className="mt-10 flex items-center gap-3">
+                <span className="h-px w-12 bg-gold" aria-hidden />
+                <span className="text-xs font-medium uppercase tracking-[0.18em] text-surface-inverse-muted">
+                  Crafted to last · 30-day returns · Carbon-neutral
+                </span>
               </div>
             </Reveal>
           </div>
