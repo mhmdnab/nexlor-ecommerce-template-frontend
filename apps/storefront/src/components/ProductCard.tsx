@@ -73,7 +73,7 @@ export function ProductCard({ product, priority }: { product: ProductCardType; p
       </div>
 
       <div className="mt-3 flex items-start justify-between gap-3">
-        <h3 className="text-sm font-medium leading-snug text-foreground">{product.name}</h3>
+        <h3 className="font-serif text-base font-medium leading-snug text-foreground">{product.name}</h3>
         <Price cents={product.price} className="shrink-0 text-sm font-medium" />
       </div>
     </Link>
